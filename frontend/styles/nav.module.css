@@ -1,0 +1,36 @@
+.nav {
+    height: 80px;
+  }
+  
+  .nav__wrapper {
+    @apply flex justify-between items-center max-w-[1070px] w-full h-full mx-auto px-6 
+
+  }
+  
+  .nav__list--wrapper {
+    @apply flex gap-6
+    
+  }
+  
+  .nav__img--mask {
+    @apply max-w-[200px]
+ 
+  }
+  
+  .nav__img {
+   @apply w-full h-full 
+  }
+  
+  .nav__list {
+   @apply cursor-not-allowed text-[#032b41] transition-colors duration-100
+  }
+  
+  .nav__list--login:hover {
+    @apply text-[#2bd97c]
+    
+  }
+  
+  .nav__list--login {
+    @apply cursor-pointer
+  }
+  

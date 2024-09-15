@@ -1,0 +1,31 @@
+.guest__btn--wrapper{
+    @apply relative flex bg-[#3a579d] text-[#fff] justify-center
+}
+
+.google__icon--mask {
+    @apply flex items-center justify-center w-9 h-9 rounded bg-white absolute left-0.5
+}
+.guest__icon--mask {
+   @apply bg-transparent
+}
+
+.btn__ai {
+    @apply rounded  w-full h-10 text-[16px] flex items-center justify-center min-w-[180px] transition-colors duration-200
+  
+  }
+  
+  .btn__ai:hover:not(:disabled) {
+    @apply bg-[#25396b]
+  }
+
+  .auth__separator {
+    @apply flex my-4 mx-0 items-center
+     before:content-[''] before:block before:h-[1px] before:bg-[#bac8ce] before:grow
+     after:content-[""] after:block after:h-[1px] after:bg-[#bac8ce] after:grow
+    
+  }
+ 
+  .auth__separator--text{
+    @apply my-0 mx-6 text-[14px] text-[#394547] font-[500] 
+  }
+  
