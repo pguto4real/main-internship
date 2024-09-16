@@ -4,19 +4,31 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+// import crypto from 'crypto'
 import { firebaseAuth } from "../db/firebase/connectFirebase.js";
+import { generateTokenAndSetCookie } from "../lib/utils/generateToken.js";
 
 export const signup = async (req, res) => {
+  //   const secret = crypto.randomBytes(32).toString('base64');
+  // console.log(secret);
+  // return
   const { email, password } = req.body;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({ error: "Invalid email format" });
   }
-
+  if (password.length < 6) {
+    return res
+      .status(400)
+      .json({ error: "Password must be at least 6 character long" });
+  }
   createUserWithEmailAndPassword(firebaseAuth, email, password)
     .then((userCredential) => {
       // Signed up
       const user = userCredential.user;
+      // const {data} = user
+      // console.log(user.uid)
+
       return res.status(201).json({ data: user });
       // ...
     })
@@ -27,7 +39,6 @@ export const signup = async (req, res) => {
     });
 };
 export const login = async (req, res) => {
- 
   const { email, password } = req.body;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
@@ -39,7 +50,6 @@ export const login = async (req, res) => {
       // Signed up
       const user = userCredential.user;
       return res.status(201).json({ data: user });
-
     })
     .catch((error) => {
       console.log("Error in login controller", error.message);

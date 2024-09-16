@@ -1,9 +1,8 @@
-import { AIContext } from "@/Helpers/Context";
+import { AIContext } from "../Helpers/Context";
 import React, { useContext, useEffect } from "react";
 
 function MainNavBar({ IoSearch, IoMenu, toggleSideBar }) {
-  const { isSideBarOpen, setIsSideBarOpen, SideBarModalRef } =
-    useContext(AIContext);
+  const { isSideBarOpen, setIsSideBarOpen, SideBarModalRef } = useContext(AIContext);
   const handleClickOutside = (event) => {
     if (
       SideBarModalRef.current &&

@@ -1,6 +1,6 @@
-import Book from "@/components/Book";
-import BooksSection from "@/components/BooksSection";
-import iconMapping from "@/utils/iconMapping";
+import Book from "../components/Book";
+import BooksSection from "../components/BooksSection";
+import iconMapping from "../utils/iconMapping";
 import React from "react";
 
 function Fea() {

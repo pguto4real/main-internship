@@ -6,59 +6,110 @@ import loginModalStyles from "../styles/loginModal.module.css";
 import AuthSeperator from "./ui/AuthSeperator";
 import { FcGoogle } from "react-icons/fc";
 import Input from "./ui/Input";
-import { AIContext } from "../Helpers/Context";
+import { AIContext, AuthContext, useAuth } from "../Helpers/Context";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { useRouter } from "next/router";
+import { firebaseAuth } from "../../backend/db/firebase/connectFirebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 const LoginModal = ({ toggleModal }) => {
-  const { variant, setVariant, loginModalRef } = useContext(AIContext);
-
+  const router = useRouter();
+  const {
+    variant,
+    setVariant,
+    loginModalRef,
+    user,
+    setUser,
+    isLoggedIn,
+    setIsLoggedIn,
+  } = useContext(AIContext);
+  console.log(variant);
   // const [email, setEmail] = useState("");
   // const [password, setpassword] = useState("");
+  // const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
+  // console.log(email, password);
   const [formData, setFormData] = useState({
-		email: '',
-		password: '',
-	});
+    email: "",
+    password: "",
+    variant: variant,
+  });
+  console.log(variant);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
 
-  const { mutate:signUpMutate, isError, isPending, error } = useMutation({
-		mutationFn: async ({ email, password }) => {
-			try {
+  const {
+    mutate: signUpMutate,
+    isError,
+    isPending,
+    error,
+  } = useMutation({
+    mutationFn: async ({ email, password, variant }) => {
+      let path = "";
+      let method = "";
 
-				const res = await fetch("/api/auth/signup", {
-					method: "POST",
-					headers: {
-						"content-type": "application/json"
-					},
-					body: JSON.stringify({ email, password })
-				})
-				const data = await res.json()
-				if (!res.ok) throw new Error(data.error || "Failed to create account");
-				if (data.error) throw new Error(data.error)
-			} catch (error) {
-				throw error
-			}
-		},
-		onSuccess: () => {
-			toast.success("Account created succesfull")
-			setFormData({})
-		}
+      if (variant === "register") {
+        path = "http://localhost:7000/api/auth/signup";
+        method = "POST";
+      } else if (variant === "login") {
+        console.log(1111);
 
-	})
-  const handleInputChange = (e) => {
-		setFormData({ ...formData, [e.target.name]: e.target.value });
-	};
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          toast.error("Invalid email format");
+          throw error;
+        }
+
+        signInWithEmailAndPassword(firebaseAuth, email, password)
+          .then((userCredential) => {
+            // Signed up
+            const user = userCredential.user;
+            setUser(user);
+            setIsLoggedIn(true)
+            router.push('/for-you');
+          })
+          .catch((error) => {
+            console.log("Error in login controller", error.message);
+            return res.status(500).json({ error: error.message });
+            // ..
+          });
+      }
+    },
+    onError: () => {},
+    onSuccess: () => {
+      let message = "";
+      if (variant === "register") {
+        message = "Account created succesfull";
+      } else if (variant === "login") {
+        message = "Login succesfull";
+      }
+      toast.success(message);
+      // setFormData({});
+    },
+  });
+  console.log(formData);
   const handleLoginOrRegister = (e) => {
     e.preventDefault();
     console.log(variant);
-    if(variant === 'register'){
-      signUpMutate(formData)
+    if (variant === "register") {
+      console.log(123);
+      signUpMutate(formData, "register");
+    } else if (variant === "login") {
+      console.log(456);
+      signUpMutate(formData, "login");
     }
-    // if (isCommenting) return;
-    // commentPost(comment);
   };
 
-
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  useEffect(() => {
+    console.log(document.getElementById("myTextField"));
+  }, []);
   return (
     <>
       (
@@ -101,19 +152,18 @@ const LoginModal = ({ toggleModal }) => {
 
             {variant === "login" ? (
               <>
-              
-              <button
-                className={`${loginModalStyles["btn__ai"]} ${loginModalStyles["guest__btn--wrapper"]} !bg-[#4285f4] hover:!bg-[#3367d6]`}
-                fdprocessedid="pi3tk"
-              >
-                <figure
-                  className={`${loginModalStyles["google__icon--mask"]} ${loginModalStyles["guest__icon--mask"]}`}
+                <button
+                  className={`${loginModalStyles["btn__ai"]} ${loginModalStyles["guest__btn--wrapper"]} !bg-[#4285f4] hover:!bg-[#3367d6]`}
+                  fdprocessedid="pi3tk"
                 >
-                  <FcGoogle />
-                </figure>
-                <div>Login With Google</div>
-              </button>
-              <AuthSeperator />
+                  <figure
+                    className={`${loginModalStyles["google__icon--mask"]} ${loginModalStyles["guest__icon--mask"]}`}
+                  >
+                    <FcGoogle />
+                  </figure>
+                  <div>Login With Google</div>
+                </button>
+                <AuthSeperator />
               </>
             ) : (
               variant === "register" && (
@@ -135,23 +185,44 @@ const LoginModal = ({ toggleModal }) => {
             )}
 
             <form action="" className="flex flex-col gap-4">
-              <Input
-                placeholder="Email"
+              {/* <input
+                  type="text"
+                  name={"email"}
+                  disabled={isLoading}
+                  onChange={handleInputChange}
+                  placeholder={"Email"}
+                  ref={emailRef}
+                  className=" h-[40px] border-2 rounded-md text-[#394547] py-0 px-3 outline-none
+                 focus:border-[#2bd97c]
+                 "
+                 
+                /> */}
+              <input
+                id="email"
+                type="text"
                 name="email"
-                onChange={handleInputChange}
-               
-                disabled={isLoading}
+                value={formData.email} // Controlled input field for lastName
+                onChange={handleInputChange} // Handle change
+                placeholder="Email"
               />
 
               {variant !== "forgot" && (
-                <Input
-                 
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password} // Controlled input field for lastName
+                  onChange={handleInputChange} // Handle change
                   placeholder="Password"
-               
-                  name='password'
-                  onChange={handleInputChange}
-              
                 />
+
+                // <Input
+                //   ref={passwordRef}
+                //   placeholder="Password"
+                //   name="password"
+                //   defaultValue="fff"
+                //   onChange={handleInputChange}
+                //   value={formData.password}
+                // />
               )}
               {variant === "login" ? (
                 <button
@@ -165,7 +236,11 @@ const LoginModal = ({ toggleModal }) => {
                   className={`hover:bg-[#20ba68] bg-[#2bd97c] text-[#032b41] w-full h-10 rounded-md text-base transition-colors duration-200 flex items-center justify-center`}
                   onClick={handleLoginOrRegister}
                 >
-                  {"Register"}
+                  {isPending ? (
+                    <span className="loading loading-infinity loading-lg"></span>
+                  ) : (
+                    "Register"
+                  )}
                 </button>
               ) : (
                 <button
@@ -175,6 +250,7 @@ const LoginModal = ({ toggleModal }) => {
                   {"Send reset password link"}
                 </button>
               )}
+              {/* {isError && <p className='text-red-500 text-center'>{error.message}</p>} */}
             </form>
           </div>
 

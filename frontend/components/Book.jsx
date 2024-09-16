@@ -1,4 +1,4 @@
-import iconMapping from '@/utils/iconMapping';
+import iconMapping from '../utils/iconMapping';
 import React from 'react'
 
 function Book({img,audio}) {

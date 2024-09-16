@@ -6,17 +6,23 @@ const Input = ({
   type,
   disabled,
   onChange,
+  name,
+  ref,
+  defaultVal
 }) => {
   return (
     <input
       type={type}
+      name={name}
       disabled={disabled}
       onChange={onChange}
       placeholder={placeholder}
+      ref={ref}
+      defaultValue={defaultVal}
       className=" h-[40px] border-2 rounded-md text-[#394547] py-0 px-3 outline-none
       focus:border-[#2bd97c]
       "
-       value={value}
+     value={value}
     />
   );
 };

@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -13,5 +14,10 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [ require('daisyui'),],
+  daisyui: {
+  
+    base: false, // applies background color and foreground color for root element by default
+   
+  },
 };

@@ -1,4 +1,4 @@
-import { AIContext } from "@/Helpers/Context";
+import { AIContext } from "../Helpers/Context";
 import Link from "next/link";
 import React, { useContext } from "react";
 
@@ -11,10 +11,9 @@ function SideBar({
   Logout,
   IoSettings,
   IoSearch,
-  SideBarModalRef
 }) {
 
-  const { isSideBarOpen, setIsSideBarOpen} = useContext(AIContext)
+  const { isSideBarOpen, setIsSideBarOpen,SideBarModalRef} = useContext(AIContext)
   return (
     <>
     <div class={`sidebar__overlay  ${!isSideBarOpen && 'sidebar__overlay--hidden'}`}></div>
