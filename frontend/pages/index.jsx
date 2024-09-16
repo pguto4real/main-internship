@@ -17,12 +17,13 @@ import LoginModal from "../components/LoginModal";
 
 import { AIContext, useAuth } from "../Helpers/Context";
 import checkCurrent from "../hook/checkCurrent";
+import { useRouter } from "next/router";
 export default function Home() {
- 
+  const router = useRouter();
   const { isModalOpen, setIsModalOpen, loginModalRef,isLoggedIn,isCheckingUser
   } = useContext(AIContext)
  
-  console.log(isCheckingUser)
+
   
   const [title, setTitle] = useState("Default Title");
   const toggleModal = () => {
@@ -54,7 +55,7 @@ export default function Home() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
 
-   
+   isLoggedIn && router.push('/for-you');
   }, [isModalOpen]);
   if(isCheckingUser){
     return <div className="flex items-center justify-center h-[100vh]">

@@ -81,7 +81,7 @@ export default function App({ Component, pageProps }) {
   }
 
   useEffect(()=>{
-    checkLoginStatus()
+    return ()=>checkLoginStatus()
   },[])
   return (
     <QueryClientProvider client={queryClient}>
