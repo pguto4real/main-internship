@@ -1,9 +1,10 @@
 import Book from "../components/Book";
 import BooksSection from "../components/BooksSection";
 import iconMapping from "../utils/iconMapping";
-import React from "react";
+import React, { useContext } from "react";
 
 function Fea() {
+  
   const books = [
     {
       img: "https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Fimages%2Fcant-hurt-me.png?alt=media&amp;token=026646b0-40f8-48c4-8d32-b69bd5b8f700",
@@ -32,6 +33,7 @@ function Fea() {
         "https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fcan't-hurt-me.mp3?alt=media&amp;token=7de57406-60ca-49d6-9113-857507f48312",
     },
   ];
+  // console.log(isLoggedIn)
   const FaPlayCircle = iconMapping["FaPlayCircle"];
   const IoTimeOutline = iconMapping["IoTimeOutline"];
   const CiStar = iconMapping["CiStar"];

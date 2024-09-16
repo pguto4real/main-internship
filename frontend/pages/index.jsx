@@ -15,7 +15,7 @@ import Statistic from "../components/Statistic";
 import Landing from "../components/Landing";
 import LoginModal from "../components/LoginModal";
 
-import { AIContext, useAuth } from "../Helpers/Context";
+import { AIContext } from "../Helpers/Context";
 import checkCurrent from "../hook/checkCurrent";
 import { useRouter } from "next/router";
 export default function Home() {
