@@ -71,7 +71,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar toggleModal={toggleModal} />
-      {isModalOpen && <LoginModal toggleModal={toggleModal} />}
+      
       <Landing toggleModal={toggleModal} />
       <section id="features">
         <div className="containers">

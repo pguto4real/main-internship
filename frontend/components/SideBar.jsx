@@ -1,6 +1,8 @@
 import { AIContext } from "../Helpers/Context";
 import Link from "next/link";
-import React, { useContext } from "react";
+import React, { use, useContext, useEffect } from "react";
+import { firebaseAuth } from "../../backend/db/firebase/connectFirebase";
+import { signOut } from "firebase/auth";
 // import { AIContext } from "../Helpers/Context";
 function SideBar({
   TiHomeOutline,
@@ -12,16 +14,38 @@ function SideBar({
   IoSettings,
   IoSearch,
 }) {
-  const { isLoggedIn, isCheckingUser,setUser,setIsLoggedIn } = useContext(AIContext);
-  const { isSideBarOpen, setIsSideBarOpen, SideBarModalRef } =
-    useContext(AIContext);
+  const {
+    isLoggedIn,
+    isCheckingUser,
+    setUser,
+    user,
+    setIsLoggedIn,
+    setIsModalOpen,
+    isModalOpen,
+    isSideBarOpen,
 
-    const handleLogout = (e) => {
-      console.log('clicked')
-      signOut(firebaseAuth);
-      setUser({})
-      setIsLoggedIn(false)
-    };
+    SideBarModalRef,
+  } = useContext(AIContext);
+  console.log(user);
+  const handleLogout = (e) => {
+    console.log("clicked");
+    signOut(firebaseAuth);
+    setUser({});
+    setIsLoggedIn(false);
+  };
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+  useEffect(() => {
+    if(user){
+      console.log('logged in')
+    }
+    else
+    {
+      console.log('logged out')
+    }
+  }, [user]);
   return (
     <>
       <div
@@ -92,12 +116,19 @@ function SideBar({
               {isLoggedIn ? (
                 <>
                   <Logout />
-                  <div class="sidebar__link--text" onClick={handleLogout}>Logout</div>
+                  <div class="sidebar__link--text" onClick={handleLogout}>
+                    Logout
+                  </div>
                 </>
               ) : (
                 <>
                   <Login />
-                  <div class="sidebar__link--text">Login</div>
+                  <div
+                    class="sidebar__link--text"
+                    onClick={() => toggleModal()}
+                  >
+                    Login
+                  </div>
                 </>
               )}
             </div>

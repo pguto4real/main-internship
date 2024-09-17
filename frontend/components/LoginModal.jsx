@@ -18,9 +18,9 @@ const LoginModal = ({ toggleModal }) => {
     variant,
     setVariant,
     loginModalRef,
-    user,
+   
     setUser,
-    isLoggedIn,
+    setIsModalOpen,
     setIsLoggedIn,
   } = useContext(AIContext);
   console.log(variant);
@@ -82,20 +82,22 @@ const LoginModal = ({ toggleModal }) => {
         message = "Account created succesfull";
       } else if (variant === "login") {
         message = "Login succesfull";
+        
       }
       toast.success(message);
+      setIsModalOpen(false);
       // setFormData({});
     },
   });
-  console.log(formData);
+
   const handleLoginOrRegister = (e) => {
     e.preventDefault();
-    console.log(variant);
+   
     if (variant === "register") {
-      console.log(123);
+     
       signUpMutate(formData, "register");
     } else if (variant === "login") {
-      console.log(456);
+  
       signUpMutate(formData, "login");
     }
   };
@@ -113,7 +115,7 @@ const LoginModal = ({ toggleModal }) => {
   return (
     <>
       (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center flex-col z-50">
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center flex-col z-[9999]">
         <div
           ref={loginModalRef}
           className="modal-box relative bg-white rounded shadow-lg max-w-sm !p-0 overflow-hidden"

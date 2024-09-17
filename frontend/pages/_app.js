@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { firebaseAuth } from "../../backend/db/firebase/connectFirebase";
+import LoginModal from "../components/LoginModal";
 
 export default function App({ Component, pageProps }) {
 
@@ -48,10 +49,13 @@ export default function App({ Component, pageProps }) {
   const FiHelpCircle = iconMapping["FiHelpCircle"];
 
   const toggleSideBar = () => {
-    console.log("clicked");
     setIsSideBarOpen(!isSideBarOpen);
   };
-
+  const toggleModal = () => {
+    console.log('clicked')
+    setIsModalOpen(!isModalOpen);
+    setIsSideBarOpen(false);
+  };
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -79,7 +83,7 @@ export default function App({ Component, pageProps }) {
     
     }
   }
-
+  
   useEffect(()=>{
     return ()=>checkLoginStatus()
   },[])
@@ -125,6 +129,7 @@ export default function App({ Component, pageProps }) {
 
           <div className="row">
             <div className="container">
+            {isModalOpen && <LoginModal toggleModal={toggleModal} />}
               <Component {...pageProps} />
             </div>
           </div>
