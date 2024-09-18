@@ -7,10 +7,10 @@ function NotLoggedIn() {
         setIsModalOpen(!isModalOpen);
       };
   return (
-    <div class="settings__login--wrapper">
+    <div className="settings__login--wrapper">
       <img
         alt="login"
-        srcset="/assets/login.png"
+        srcSet="/assets/login.png"
         src="/assets/login.png"
         width="1033"
         height="712"
@@ -20,10 +20,10 @@ function NotLoggedIn() {
         loading="lazy"
        
       />
-      <div class="settings__login--text">
+      <div className="settings__login--text">
         Log in to your account to see your details.
       </div>
-      <button class="btn__settings settings__login--btn" fdprocessedid="i3k6bj" onClick={()=>toggleModal()}>
+      <button className="btn__settings settings__login--btn" fdprocessedid="i3k6bj" onClick={()=>toggleModal()}>
         Login
       </button>
     </div>

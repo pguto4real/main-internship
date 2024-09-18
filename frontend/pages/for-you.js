@@ -1,10 +1,13 @@
-import Book from "../components/Book";
 import BooksSection from "../components/BooksSection";
+
+import SkelentonForYou from "../components/ui/skelenton/SkelentonForYou";
+
+import { AIContext } from "../Helpers/Context";
 import iconMapping from "../utils/iconMapping";
 import React, { useContext } from "react";
 
 function Fea() {
-  
+  const { isCheckingUser, setIsCheckingUser } = useContext(AIContext);
   const books = [
     {
       img: "https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Fimages%2Fcant-hurt-me.png?alt=media&amp;token=026646b0-40f8-48c4-8d32-b69bd5b8f700",
@@ -38,44 +41,58 @@ function Fea() {
   const IoTimeOutline = iconMapping["IoTimeOutline"];
   const CiStar = iconMapping["CiStar"];
   return (
-    <div class="for-you__wrapper">
-      <div class="for-you__title">Selected just for you</div>
-      <audio src="https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fthe-lean-startup.mp3?alt=media&amp;token=c2f2b1d4-eaf2-4d47-8c8a-7a8fd062a47e"></audio>
-      <a class="selected__book" href="/book/f9gy1gpai8">
-        <div class="selected__book--sub-title">
-          How Constant Innovation Creates Radically Successful Businesses
-        </div>
-        <div class="selected__book--line"></div>
-        <div class="selected__book--content">
-          <figure class="book__image--wrapper !h-[140px] !w-[140px] min-w-[140px]">
-            <img
-              class="book__image block"
-              src="https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Fimages%2Fthe-lean-startup.png?alt=media&amp;token=087bb342-71d9-4c07-8b0d-4dd1f06a5aa2"
-              alt="book"
-            />
-          </figure>
-          <div class="selected__book--text">
-            <div class="selected__book--title">The Lean Startup</div>
-            <div class="selected__book--author">Eric Ries</div>
-            <div class="selected__book--duration-wrapper">
-              <div class="selected__book--icon">
-                <FaPlayCircle />
+    <>
+      <div className="for-you__wrapper">
+        {isCheckingUser ? (
+          <SkelentonForYou />
+        ) : (
+          <>
+            <div className="for-you__title">Selected just for you</div>
+            <audio src="https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fthe-lean-startup.mp3?alt=media&amp;token=c2f2b1d4-eaf2-4d47-8c8a-7a8fd062a47e"></audio>
+
+            <a className="selected__book" href="/book/f9gy1gpai8">
+              <div className="selected__book--sub-title">
+                How Constant Innovation Creates Radically Successful Businesses
               </div>
-              <div class="selected__book--duration">3 mins 23 secs</div>
-            </div>
-          </div>
+              <div className="selected__book--line"></div>
+              <div className="selected__book--content">
+                <figure className="book__image--wrapper !h-[140px] !w-[140px] min-w-[140px]">
+                  <img
+                    className="book__image block"
+                    src="https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Fimages%2Fthe-lean-startup.png?alt=media&amp;token=087bb342-71d9-4c07-8b0d-4dd1f06a5aa2"
+                    alt="book"
+                  />
+                </figure>
+                <div className="selected__book--text">
+                  <div className="selected__book--title">The Lean Startup</div>
+                  <div className="selected__book--author">Eric Ries</div>
+                  <div className="selected__book--duration-wrapper">
+                    <div className="selected__book--icon">
+                      <FaPlayCircle />
+                    </div>
+                    <div className="selected__book--duration">3 mins 23 secs</div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </>
+        )}
+        <div>
+          <BooksSection
+            title={"Recommended For You"}
+            sub_title={"We think you’ll like these"}
+            books={books}
+          />
         </div>
-      </a>
-      <div>
-      <BooksSection title={"Recommended For You"} sub_title={"We think you’ll like these"} books={books} />
-     
+        <div>
+          <BooksSection
+            title={"Suggested Books"}
+            sub_title={"Browse those books"}
+            books={books}
+          />
+        </div>
       </div>
-      <div>
-      <BooksSection title={"Suggested Books"} sub_title={"Browse those books"} books={books} />
-     
-        
-      </div>
-    </div>
+    </>
   );
 }
 

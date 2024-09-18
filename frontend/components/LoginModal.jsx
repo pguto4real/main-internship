@@ -10,96 +10,150 @@ import { AIContext, AuthContext, useAuth } from "../Helpers/Context";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
-import { firebaseAuth } from "../../backend/db/firebase/connectFirebase";
+import { firebaseAuth } from "../firebase/connectFirebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { guestLogin, login, signUp } from "../functions/authFunctions";
 const LoginModal = ({ toggleModal }) => {
   const router = useRouter();
   const {
     variant,
     setVariant,
     loginModalRef,
-   
+
     setUser,
     setIsModalOpen,
     setIsLoggedIn,
   } = useContext(AIContext);
-  console.log(variant);
-  // const [email, setEmail] = useState("");
-  // const [password, setpassword] = useState("");
-  // const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  // console.log(email, password);
+
+  // const [isLoading, setIsLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     variant: variant,
   });
-  console.log(variant);
+
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
 
+  // const {
+  //   mutate: signUpMutate,
+  //   isError,
+  //   isPending,
+  //   error,
+  // } = useMutation({
+  //   mutationFn: async ({ email, password, variant }) => {
+  //     let path = "";
+  //     let method = "";
+
+  //     if (variant === "register") {
+  //       path = "http://localhost:7000/api/auth/signup";
+  //       method = "POST";
+  //     } else if (variant === "login") {
+  //       console.log(isPending)
+
+  //       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //       if (!emailRegex.test(email)) {
+  //         toast.error("Invalid email format");
+  //         throw error;
+  //       }
+
+  //       signInWithEmailAndPasswor(firebaseAuth, email, password)
+  //         .then((userCredential) => {
+  //           // Signed up
+  //           const user = userCredential.user;
+  //           setUser(user);
+  //           setIsLoggedIn(true)
+  //           router.push('/for-you');
+  //         })
+  //         .catch((error) => {
+  //           console.log("Error in login controller", error.message);
+  //           return res.status(500).json({ error: error.message });
+  //           // ..
+  //         });
+  //     }
+  //   },
+  //   onError: () => {},
+  //   onSuccess: () => {
+  //     let message = "";
+  //     if (variant === "register") {
+  //       message = "Account created succesfull";
+  //     } else if (variant === "login") {
+  //       message = "Login succesfull";
+
+  //     }
+  //     toast.success(message);
+  //     setIsModalOpen(false);
+  //     setFormData({});
+  //   },
+  // });
   const {
     mutate: signUpMutate,
-    isError,
-    isPending,
-    error,
+    isPending: isSignupPending,
+    isError: isSignupError,
+    error: signupError,
+    isSuccess: isSignupSuccess,
   } = useMutation({
-    mutationFn: async ({ email, password, variant }) => {
-      let path = "";
-      let method = "";
-
-      if (variant === "register") {
-        path = "http://localhost:7000/api/auth/signup";
-        method = "POST";
-      } else if (variant === "login") {
-        console.log(1111);
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          toast.error("Invalid email format");
-          throw error;
-        }
-
-        signInWithEmailAndPassword(firebaseAuth, email, password)
-          .then((userCredential) => {
-            // Signed up
-            const user = userCredential.user;
-            setUser(user);
-            setIsLoggedIn(true)
-            router.push('/for-you');
-          })
-          .catch((error) => {
-            console.log("Error in login controller", error.message);
-            return res.status(500).json({ error: error.message });
-            // ..
-          });
+    mutationFn: signUp,
+    onError: (error) => {
+      if (error.message === "Firebase: Error (auth/email-already-in-use).") {
+        toast.error("User already exist");
       }
     },
-    onError: () => {},
-    onSuccess: () => {
-      let message = "";
-      if (variant === "register") {
-        message = "Account created succesfull";
-      } else if (variant === "login") {
-        message = "Login succesfull";
-        
-      }
-      toast.success(message);
+    onSuccess: (user) => {
+      toast.success("Account created succesfully");
       setIsModalOpen(false);
-      // setFormData({});
+    },
+  });
+  const handleRegister = (e) => {
+    e.preventDefault();
+
+    signUpMutate(formData);
+  };
+
+  // Mutation for login
+  const {
+    mutate: loginMutate,
+    isPending: isLoginPending,
+    isError: isLoginError,
+    error: loginError,
+    isSuccess: isLoginSuccess,
+  } = useMutation({
+    mutationFn: login,
+    onError: (error) => {
+      console.error("Login error:", error);
+    },
+    onSuccess: (user) => {
+      toast.success("Login succesfull");
+      setIsModalOpen(false);
+    },
+  });
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    loginMutate(formData);
+  };
+  // Mutation for Guest Login
+  const {
+    mutate: guestLoginMutate,
+    isPending: isGuestLoginPending,
+    isError: isGuestLoginError,
+    error: guestLoginError,
+    isSuccess: isGuestLoginSuccess,
+  } = useMutation({
+    mutationFn: guestLogin,
+    onError: (error) => {
+      console.error(" Guest Login error:", error);
+    },
+    onSuccess: (user) => {
+      toast.success(" Guest Login succesfull");
+      setIsModalOpen(false);
     },
   });
 
-  const handleLoginOrRegister = (e) => {
+  const handleGuestLogin = (e) => {
     e.preventDefault();
-   
-    if (variant === "register") {
-     
-      signUpMutate(formData, "register");
-    } else if (variant === "login") {
-  
-      signUpMutate(formData, "login");
-    }
+    guestLoginMutate(formData);
   };
 
   const handleInputChange = (e) => {
@@ -109,13 +163,11 @@ const LoginModal = ({ toggleModal }) => {
       [name]: value,
     }));
   };
-  useEffect(() => {
-    console.log(document.getElementById("myTextField"));
-  }, []);
+
   return (
     <>
       (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center flex-col z-[9999]">
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center flex-col z-[1001]">
         <div
           ref={loginModalRef}
           className="modal-box relative bg-white rounded shadow-lg max-w-sm !p-0 overflow-hidden"
@@ -137,8 +189,8 @@ const LoginModal = ({ toggleModal }) => {
 
             {variant === "login" && (
               <>
-                <button
-                  class={`${loginModalStyles["btn__ai"]} ${loginModalStyles["guest__btn--wrapper"]}`}
+                <button onClick={handleGuestLogin}
+                  className={`${loginModalStyles["btn__ai"]} ${loginModalStyles["guest__btn--wrapper"]}`}
                   fdprocessedid="pi3tk"
                 >
                   <figure
@@ -146,7 +198,14 @@ const LoginModal = ({ toggleModal }) => {
                   >
                     <FaUser />
                   </figure>
-                  <div>Login as a Guest</div>
+                  <div>
+                  {isGuestLoginPending ? (
+                    <span className="loading loading-infinity loading-lg"></span>
+                  ) : (
+                    "Login as a Guest"
+                  )}
+                    
+                    </div>
                 </button>
                 <AuthSeperator />
               </>
@@ -229,16 +288,20 @@ const LoginModal = ({ toggleModal }) => {
               {variant === "login" ? (
                 <button
                   className={`hover:bg-[#20ba68] bg-[#2bd97c] text-[#032b41] w-full h-10 rounded-md text-base transition-colors duration-200 flex items-center justify-center`}
-                  onClick={handleLoginOrRegister}
+                  onClick={handleLogin}
                 >
-                  {"Login"}
+                  {isLoginPending ? (
+                    <span className="loading loading-infinity loading-lg"></span>
+                  ) : (
+                    "Login"
+                  )}
                 </button>
               ) : variant === "register" ? (
                 <button
                   className={`hover:bg-[#20ba68] bg-[#2bd97c] text-[#032b41] w-full h-10 rounded-md text-base transition-colors duration-200 flex items-center justify-center`}
-                  onClick={handleLoginOrRegister}
+                  onClick={handleRegister}
                 >
-                  {isPending ? (
+                  {isSignupPending ? (
                     <span className="loading loading-infinity loading-lg"></span>
                   ) : (
                     "Register"
@@ -266,7 +329,7 @@ const LoginModal = ({ toggleModal }) => {
           )}
           {variant === "login" ? (
             <button
-              class="bg-[#e1e9e8] h-10 text-center text-[#116be9] w-full rounded-b-md font-light text-base"
+              className="bg-[#e1e9e8] h-10 text-center text-[#116be9] w-full rounded-b-md font-light text-base"
               onClick={() => setVariant("register")}
               fdprocessedid="6kc93j"
             >
@@ -274,7 +337,7 @@ const LoginModal = ({ toggleModal }) => {
             </button>
           ) : variant === "register" ? (
             <button
-              class="bg-[#e1e9e8] h-10 text-center text-[#116be9] w-full rounded-b-md font-light text-base"
+              className="bg-[#e1e9e8] h-10 text-center text-[#116be9] w-full rounded-b-md font-light text-base"
               onClick={() => setVariant("login")}
               fdprocessedid="6kc93j"
             >
@@ -282,7 +345,7 @@ const LoginModal = ({ toggleModal }) => {
             </button>
           ) : (
             <button
-              class="bg-[#e1e9e8] h-10 text-center text-[#116be9] w-full rounded-b-md font-light text-base"
+              className="bg-[#e1e9e8] h-10 text-center text-[#116be9] w-full rounded-b-md font-light text-base"
               onClick={() => setVariant("login")}
               fdprocessedid="6kc93j"
             >

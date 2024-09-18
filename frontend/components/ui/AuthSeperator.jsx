@@ -2,8 +2,8 @@ import React from "react";
 import loginModalStyles from "../../styles/loginModal.module.css";
 function AuthSeperator() {
   return (
-    <div class={loginModalStyles.auth__separator}>
-      <span class={loginModalStyles["auth__separator--text"]}>or</span>
+    <div className={loginModalStyles.auth__separator}>
+      <span className={loginModalStyles["auth__separator--text"]}>or</span>
     </div>
   );
 }

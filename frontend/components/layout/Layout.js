@@ -1,23 +1,22 @@
 import { onAuthStateChanged } from "firebase/auth";
-import MainNavBar from "../components/MainNavBar";
-import SideBar from "../components/SideBar";
-import { AIContext, AuthProvider } from "../Helpers/Context";
-import checkCurrent from "../hook/checkCurrent";
 
-import "../styles/globals.css";
-import iconMapping from "../utils/iconMapping";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query";
+import { AIContext } from "../../Helpers/Context";
+
+import { firebaseAuth } from "../../../backend/db/firebase/connectFirebase";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { Toaster } from "react-hot-toast";
-import { firebaseAuth } from "../firebase/connectFirebase";
-import LoginModal from "../components/LoginModal";
 
-export default function App({ Component, pageProps }) {
+import iconMapping from "../../utils/iconMapping";
+
+import LoginModal from "../LoginModal";
+import SideBar from "../SideBar";
+import MainNavBar from "../MainNavBar";
+
+export default function Layout({ children }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
 
@@ -37,6 +36,7 @@ export default function App({ Component, pageProps }) {
 
   // Check if the current route is in the hidden routes list
   const showComponent = !hiddenRoutes.includes(router.pathname);
+
   const IoMenu = iconMapping["IoMdMenu"];
   const IoSearch = iconMapping["IoMdSearch"];
   const TiHomeOutline = iconMapping["TiHomeOutline"];
@@ -63,25 +63,26 @@ export default function App({ Component, pageProps }) {
     },
   });
   const [isCheckingUser, setIsCheckingUser] = useState(false);
-  const checkLoginStatus = () => {
-    try {
-      setIsCheckingUser(true);
+//   const checkLoginStatus = () => {
+//     try {
+//       setIsCheckingUser(true);
 
-      onAuthStateChanged(firebaseAuth, (user) => {
-        if (user) {
-          setUser(user);
-          setIsLoggedIn(true);
-        }
-      });
-      setIsCheckingUser(false);
-    } catch (error) {
-      console.log("Error in getCurrentUser controller", error.message);
-    }
-  };
+//       onAuthStateChanged(firebaseAuth, (user) => {
+//         if (user) {
+//           setUser(user);
+//           setIsLoggedIn(true);
+//         }
+//       });
+//       setIsCheckingUser(false);
+//     } catch (error) {
+//       console.log("Error in getCurrentUser controller", error.message);
+//     }
+//   };
 
-  useEffect(() => {
-    return () => checkLoginStatus();
-  }, [router]);
+//   useEffect(() => {
+//     console.log('1234')
+//    checkLoginStatus();
+//   }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <AIContext.Provider
@@ -104,7 +105,7 @@ export default function App({ Component, pageProps }) {
       >
         {/* Conditionally render MyComponent based on the current route */}
         <div className="wrapper">
-          <Toaster className="!z-[100000]"/>
+          <Toaster />
           {showComponent && (
             <MainNavBar
               toggleSideBar={toggleSideBar}
@@ -129,7 +130,7 @@ export default function App({ Component, pageProps }) {
           <div className="row">
             <div className="container">
               {isModalOpen && <LoginModal toggleModal={toggleModal} />}
-              <Component {...pageProps} />
+              {children}
             </div>
           </div>
         </div>
