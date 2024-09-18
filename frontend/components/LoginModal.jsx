@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import { firebaseAuth } from "../firebase/connectFirebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { guestLogin, login, signUp } from "../functions/authFunctions";
+import { guestLogin, login, signInWithGoogle, signUp } from "../functions/authFunctions";
 const LoginModal = ({ toggleModal }) => {
   const router = useRouter();
   const {
@@ -135,6 +135,27 @@ const LoginModal = ({ toggleModal }) => {
   };
   // Mutation for Guest Login
   const {
+    mutate: googleLoginMutate,
+    isPending: isGoogleLoginPending,
+    isError: isGoogleLoginError,
+    error: googleLoginError,
+    isSuccess: isGoogleLoginSuccess,
+  } = useMutation({
+    mutationFn: signInWithGoogle,
+    onError: (error) => {
+      console.error(" Google Login error:", error);
+    },
+    onSuccess: (user) => {
+      toast.success(" Google Login succesfull");
+      setIsModalOpen(false);
+    },
+  });
+
+  const handleGoogleLogin = (e) => {
+    e.preventDefault();
+    googleLoginMutate(formData);
+  };
+  const {
     mutate: guestLoginMutate,
     isPending: isGuestLoginPending,
     isError: isGuestLoginError,
@@ -213,7 +234,7 @@ const LoginModal = ({ toggleModal }) => {
 
             {variant === "login" ? (
               <>
-                <button
+                <button  onClick={handleGoogleLogin}
                   className={`${loginModalStyles["btn__ai"]} ${loginModalStyles["guest__btn--wrapper"]} !bg-[#4285f4] hover:!bg-[#3367d6]`}
                   fdprocessedid="pi3tk"
                 >
@@ -222,7 +243,13 @@ const LoginModal = ({ toggleModal }) => {
                   >
                     <FcGoogle />
                   </figure>
-                  <div>Login With Google</div>
+                  <div>
+                  {isGoogleLoginPending ? (
+                    <span className="loading loading-infinity loading-lg"></span>
+                  ) : (
+                    "Login With Google"
+                  )}
+                    </div>
                 </button>
                 <AuthSeperator />
               </>
