@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import { firebaseAuth } from "../firebase/connectFirebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { guestLogin, login, signInWithGoogle, signUp } from "../functions/authFunctions";
+import { guestLogin, login, resetPassword, signInWithGoogle, signUp } from "../functions/authFunctions";
 const LoginModal = ({ toggleModal }) => {
   const router = useRouter();
   const {
@@ -177,6 +177,32 @@ const LoginModal = ({ toggleModal }) => {
     guestLoginMutate(formData);
   };
 
+  const {
+    mutate: passwordResetMutate,
+    isPending: isPasswordResetPending,
+    isError: ispPasswordResetError,
+    error: passwordResetLoginError,
+    isSuccess: isPasswordResetSuccess,
+  } = useMutation({
+    mutationFn: resetPassword,
+    onError: (error) => {
+  
+      if (error.message === 'Firebase: Error (auth/user-not-found).') {
+       toast.error('User not found' );
+      }
+    
+    },
+    onSuccess: (user) => {
+      toast.success(" Your reset email has been sent!");
+      setIsModalOpen(false);
+    },
+  });
+
+  const handlePesetPassword = (e) => {
+    e.preventDefault();
+    passwordResetMutate(formData.email);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -337,9 +363,14 @@ const LoginModal = ({ toggleModal }) => {
               ) : (
                 <button
                   className={`hover:bg-[#20ba68] bg-[#2bd97c] text-[#032b41] w-full h-10 rounded-md text-base transition-colors duration-200 flex items-center justify-center`}
-                  onClick={handleLoginOrRegister}
+                  onClick={handlePesetPassword}
                 >
-                  {"Send reset password link"}
+
+                  {isPasswordResetPending ? (
+                    <span className="loading loading-infinity loading-lg"></span>
+                  ) : (
+                   "Send reset password link"
+                  )}
                 </button>
               )}
               {/* {isError && <p className='text-red-500 text-center'>{error.message}</p>} */}
