@@ -180,9 +180,7 @@ const LoginModal = ({ toggleModal }) => {
   const {
     mutate: passwordResetMutate,
     isPending: isPasswordResetPending,
-    isError: ispPasswordResetError,
-    error: passwordResetLoginError,
-    isSuccess: isPasswordResetSuccess,
+    
   } = useMutation({
     mutationFn: resetPassword,
     onError: (error) => {
