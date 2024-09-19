@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { AIContext } from "../Helpers/Context";
-import NotLoggedIn from "../components/NotLoggedIn";
+import { AIContext } from "../../Helpers/Context";
+import NotLoggedIn from "../../components/NotLoggedIn";
 
 function settings() {
   const { isLoggedIn } = useContext(AIContext);

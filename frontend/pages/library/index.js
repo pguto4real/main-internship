@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import iconMapping from "../utils/iconMapping";
-import BooksSection from "../components/BooksSection";
-import { AIContext } from "../Helpers/Context";
-import NotLoggedIn from "../components/NotLoggedIn";
+import iconMapping from "../../utils/iconMapping";
+import BooksSection from "../../components/BooksSection";
+import { AIContext } from "../../Helpers/Context";
+import NotLoggedIn from "../../components/NotLoggedIn";
 function Library() {
   const { isLoggedIn} = useContext(AIContext);
   const books = [

@@ -1,17 +1,21 @@
 import { useMutation } from "@tanstack/react-query";
-import BooksSection from "../components/BooksSection";
 
-import SkelentonForYou from "../components/ui/skelenton/SkelentonForYou";
 
-import { AIContext } from "../Helpers/Context";
-import iconMapping from "../utils/iconMapping";
+import SkelentonForYou from "../../components/ui/skelenton/SkelentonForYou";
+import SkelentonBook from "../../components/ui/skelenton/SkelentonBook";
+import BooksSection from "../../components/BooksSection";
+
+import { AIContext } from "../../Helpers/Context"; 
+import iconMapping from "../../utils/iconMapping";
 import React, { useContext, useEffect, useState } from "react";
 import {
   recomendedSection,
   selectedSection,
   suggestedSection,
-} from "../functions/fetDataFunctions";
-import SkelentonBook from "../components/ui/skelenton/SkelentonBook";
+} from "../../functions/fetDataFunctions";
+import Link from "next/link";
+
+
 
 function Fea() {
   const { isCheckingUser, setIsCheckingUser } = useContext(AIContext);
@@ -68,7 +72,7 @@ function Fea() {
             <div className="for-you__title">Selected just for you</div>
             <audio src="https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fthe-lean-startup.mp3?alt=media&amp;token=c2f2b1d4-eaf2-4d47-8c8a-7a8fd062a47e"></audio>
 
-            <a className="selected__book" href={`/book/${selected.id}`}>
+            <Link className="selected__book" href={`/book/${selected.id}`}>
               <div className="selected__book--sub-title">
                 {selected.subTitle}
               </div>
@@ -96,7 +100,7 @@ function Fea() {
                   </div>
                 </div>
               </div>
-            </a>
+            </Link>
           </>
         )}
         <div>

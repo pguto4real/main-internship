@@ -2,6 +2,7 @@ import { AIContext } from "../Helpers/Context";
 import iconMapping from "../utils/iconMapping";
 import React, { useContext } from "react";
 import SkelentonBook from "./ui/skelenton/SkelentonBook";
+import Link from "next/link";
 
 function Book({ book, loading }) {
   // console.log(book);
@@ -21,7 +22,7 @@ function Book({ book, loading }) {
   const IoTimeOutline = iconMapping["IoTimeOutline"];
   const CiStar = iconMapping["CiStar"];
   return (
-    <a className="for-you__recommended--books-link" href="/book/5bxl50cz4bt">
+    <Link className="for-you__recommended--books-link" href={`/book/${id}`}>
       <audio src={audioLink}></audio>
       <figure className="book__image--wrapper mb-2">
         <img className="book__image block" src={imageLink} alt="book" />
@@ -43,7 +44,7 @@ function Book({ book, loading }) {
           <div className="recommended__book--details-text">4.4</div>
         </div>
       </div>
-    </a>
+    </Link>
   );
 }
 
