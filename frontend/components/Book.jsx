@@ -23,6 +23,10 @@ function Book({ book, loading }) {
   const CiStar = iconMapping["CiStar"];
   return (
     <Link className="for-you__recommended--books-link" href={`/book/${id}`}>
+      {
+        subscriptionRequired && <div class="book__pill book__pill--subscription-required">Premium</div>
+      }
+      
       <audio src={audioLink}></audio>
       <figure className="book__image--wrapper mb-2">
         <img className="book__image block" src={imageLink} alt="book" />

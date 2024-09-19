@@ -1,12 +1,24 @@
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getBookById } from "../../functions/fetDataFunctions";
 import iconMapping from "../../utils/iconMapping";
+import { useRouter } from "next/router";
+import { AIContext } from "../../Helpers/Context";
 
 const BookDetails = ({ initialBookData, bookId }) => {
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const {
+    isLoggedIn,
 
+    setIsModalOpen,
+    isModalOpen,
+  } = useContext(AIContext);
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
   // Fetch book data with useQuery
   const { data: bookData, isLoading: isFetching } = useQuery({
     queryKey: ["book", bookId], // The query key
@@ -29,8 +41,9 @@ const BookDetails = ({ initialBookData, bookId }) => {
     keyIdeas,
     totalRating,
     type,
+    subscriptionRequired,
     authorDescription,
-    tags
+    tags,
   } = initialBookData;
   console.log(initialBookData);
   const IoTimeOutline = iconMapping["IoTimeOutline"];
@@ -39,6 +52,9 @@ const BookDetails = ({ initialBookData, bookId }) => {
   const HiOutlineLightBulb = iconMapping["HiOutlineLightBulb"];
   const SlBookOpen = iconMapping["SlBookOpen"];
   const FaBookmark = iconMapping["FaBookmark"];
+  useEffect(() => {
+    // subscriptionRequired && router.push("/choose-plan");
+  }, []);
   return (
     <div class="inner__wrapper">
       <div class="inner__book">
@@ -51,8 +67,12 @@ const BookDetails = ({ initialBookData, bookId }) => {
               <div class="inner-book__icon">
                 <CiStar />
               </div>
-              <div class="inner-book__overall--rating">{averageRating}&nbsp;</div>
-              <div class="inner-book__total--rating">({totalRating}&nbsp;ratings)</div>
+              <div class="inner-book__overall--rating">
+                {averageRating}&nbsp;
+              </div>
+              <div class="inner-book__total--rating">
+                ({totalRating}&nbsp;ratings)
+              </div>
             </div>
             <div class="inner-book__description">
               <div class="inner-book__icon">
@@ -75,18 +95,47 @@ const BookDetails = ({ initialBookData, bookId }) => {
           </div>
         </div>
         <div class="inner-book__read--btn-wrapper">
-          <button class="inner-book__read--btn" fdprocessedid="ny95gb">
-            <div class="inner-book__read--icon">
-              <SlBookOpen />
-            </div>
-            <div class="inner-book__read--text">Read</div>
-          </button>
-          <button class="inner-book__read--btn" fdprocessedid="cmcbun">
-            <div class="inner-book__read--icon">
-              <AiOutlineAudio />
-            </div>
-            <div class="inner-book__read--text">Listen</div>
-          </button>
+          {isLoggedIn ? (
+            <>
+              <button class="inner-book__read--btn" fdprocessedid="ny95gb">
+                <div class="inner-book__read--icon">
+                  <SlBookOpen />
+                </div>
+
+                <div class="inner-book__read--text">Read</div>
+              </button>
+              <button class="inner-book__read--btn" fdprocessedid="cmcbun">
+                <div class="inner-book__read--icon">
+                  <AiOutlineAudio />
+                </div>
+                <div class="inner-book__read--text">Listen</div>
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                class="inner-book__read--btn"
+                fdprocessedid="ny95gb"
+                onClick={() => toggleModal()}
+              >
+                <div class="inner-book__read--icon">
+                  <SlBookOpen />
+                </div>
+
+                <div class="inner-book__read--text">Read</div>
+              </button>
+              <button
+                class="inner-book__read--btn"
+                fdprocessedid="cmcbun"
+                onClick={() => toggleModal()}
+              >
+                <div class="inner-book__read--icon">
+                  <AiOutlineAudio />
+                </div>
+                <div class="inner-book__read--text">Listen</div>
+              </button>
+            </>
+          )}
         </div>
         <div class="inner-book__bookmark">
           <div class="inner-book__bookmark--icon">
@@ -96,22 +145,15 @@ const BookDetails = ({ initialBookData, bookId }) => {
         </div>
         <div class="inner-book__secondary--title">What's it about?</div>
         <div class="inner-book__tags--wrapper">
-            {
-               tags.map((tag, index) => (
-                <div key={index} className="inner-book__tag">
-                    {tag}
-                </div>
-            ))
-            }
-         
+          {tags.map((tag, index) => (
+            <div key={index} className="inner-book__tag">
+              {tag}
+            </div>
+          ))}
         </div>
-        <div class="inner-book__book--description">
-          {bookDescription}
-        </div>
+        <div class="inner-book__book--description">{bookDescription}</div>
         <h2 class="inner-book__secondary--title">About the author</h2>
-        <div class="inner-book__author--description">
-          {authorDescription}
-        </div>
+        <div class="inner-book__author--description">{authorDescription}</div>
       </div>
       <div class="inner-book--img-wrapper">
         <figure class="book__image--wrapper !h-[300px] !w-[300px] !min-h-[300px]">

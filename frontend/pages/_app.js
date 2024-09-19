@@ -33,7 +33,7 @@ export default function App({ Component, pageProps }) {
   const router = useRouter();
 
   // Define routes where you don't want the component to appear
-  const hiddenRoutes = ["/"]; // Add any routes where MyComponent should not be shown
+  const hiddenRoutes = ["/", "/choose-plan"]; // Add any routes where MyComponent should not be shown
 
   // Check if the current route is in the hidden routes list
   const showComponent = !hiddenRoutes.includes(router.pathname);
@@ -103,8 +103,8 @@ export default function App({ Component, pageProps }) {
         }}
       >
         {/* Conditionally render MyComponent based on the current route */}
-        <div className="wrapper">
-          <Toaster className="!z-[100000]"/>
+        <div className={`wrapper ${!showComponent && "wrapper__full"}`}>
+          <Toaster className="!z-[100000]" />
           {showComponent && (
             <MainNavBar
               toggleSideBar={toggleSideBar}
@@ -125,13 +125,21 @@ export default function App({ Component, pageProps }) {
               IoSearch={IoSearch}
             />
           )}
-
-          <div className="row">
-            <div className="container">
+          {!showComponent ? (
+            // When showComponent is false
+            <>
               {isModalOpen && <LoginModal toggleModal={toggleModal} />}
               <Component {...pageProps} />
+            </>
+          ) : (
+            // When showComponent is true
+            <div className="row">
+              <div className="container">
+                {isModalOpen && <LoginModal toggleModal={toggleModal} />}
+                <Component {...pageProps} />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </AIContext.Provider>
     </QueryClientProvider>
