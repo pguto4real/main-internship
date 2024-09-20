@@ -50,3 +50,5 @@ function Library() {
 
 export default Library;
 Library.showWrapperFull = false
+Library.showFonts = false
+

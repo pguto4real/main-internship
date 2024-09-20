@@ -36,3 +36,4 @@ function settings() {
 
 export default settings;
 settings.showWrapperFull = false
+settings.showFonts = false

@@ -55,7 +55,7 @@ const BookDetails = ({ initialBookData, bookId }) => {
   useEffect(() => {
     setDuration(audioRef.current?.duration);
 
-    // !subscription && subscriptionRequired && router.push("/choose-plan");
+    !subscription && subscriptionRequired && router.push("/choose-plan");
   }, []);
 
   const [isPlaying, setIsPlaying] = useState(false);
