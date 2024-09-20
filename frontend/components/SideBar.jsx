@@ -3,7 +3,9 @@ import Link from "next/link";
 import React, { use, useContext, useEffect } from "react";
 import { firebaseAuth } from "../firebase/connectFirebase";
 import { signOut } from "firebase/auth";
-// import { AIContext } from "../Helpers/Context";
+import { RiFontSize } from "react-icons/ri";
+import iconMapping from "../utils/iconMapping";
+
 function SideBar({
   TiHomeOutline,
   CiBookmark,
@@ -13,6 +15,7 @@ function SideBar({
   Logout,
   IoSettings,
   IoSearch,
+  showFonts,
 }) {
   const {
     isLoggedIn,
@@ -23,8 +26,9 @@ function SideBar({
     setIsModalOpen,
     isModalOpen,
     isSideBarOpen,
-
     SideBarModalRef,
+    fontSize,
+    setFontSize,
   } = useContext(AIContext);
 
   const handleLogout = (e) => {
@@ -32,17 +36,14 @@ function SideBar({
     setUser({});
     setIsLoggedIn(false);
   };
-
+  console.log(fontSize);
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
-  // useEffect(() => {
-  //   if (user) {
-  //     console.log("logged in");
-  //   } else {
-  //     console.log("logged out");
-  //   }
-  // }, [user]);
+  const toggleFontSize = (fontSizeData) => {
+    setFontSize(fontSizeData);
+  };
+  const RiFontSize = iconMapping["RiFontSize"];
   return (
     <>
       <div
@@ -91,6 +92,52 @@ function SideBar({
               </div>
               <div className="sidebar__link--text">Search</div>
             </div>
+            {showFonts && (
+              <div class="sidebar__link--wrapper sidebar__font--size-wrapper">
+                <div
+                  class={`sidebar__link--text sidebar__font--size-icon ${fontSize === "text-base" && "sidebar__font--size-icon--active"}`}
+                  onClick={() => toggleFontSize("text-base")}
+                >
+                  <RiFontSize
+                    class="sidebar__font--size-icon-small"
+                    height="1em"
+                    width="1em"
+                  />
+                </div>
+                <div
+                  class={`sidebar__link--text sidebar__font--size-icon ${fontSize === "text-[18px]" && "sidebar__font--size-icon--active"}`}
+                  onClick={() => toggleFontSize("text-[18px]")}
+                >
+                  <RiFontSize
+                    class="sidebar__font--size-icon-medium"
+                    height="1em"
+                    width="1em"
+                  />
+                </div>
+                <div
+                  class={`sidebar__link--text sidebar__font--size-icon ${fontSize === "text-[22px]" && "sidebar__font--size-icon--active"}`}
+                  onClick={() => toggleFontSize("text-[22px]")}
+                >
+                  <RiFontSize
+                    class="sidebar__font--size-icon-large"
+                    height="1em"
+                    width="1em"
+                  />
+                </div>
+                <div
+                  class={`sidebar__link--text sidebar__font--size-icon ${
+                    fontSize === "text-[26px]" && "sidebar__font--size-icon--active"
+                  }`}
+                  onClick={() => toggleFontSize("text-[26px]")}
+                >
+                  <RiFontSize
+                    class="sidebar__font--size-icon-xlarge"
+                    height="1em"
+                    width="1em"
+                  />
+                </div>
+              </div>
+            )}
           </div>
           <div className="sidebar__bottom">
             <Link className="sidebar__link--wrapper" href="/settings">

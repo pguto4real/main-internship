@@ -20,23 +20,25 @@ import LoginModal from "../components/LoginModal";
 export default function App({ Component, pageProps }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-
   const [user, setUser] = useState({});
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [variant, setVariant] = useState("login");
+  const [isCheckingUser, setIsCheckingUser] = useState(false);
+  const [subscription, setSubscription] = useState(false);
+  const [fontSize, setFontSize] = useState("text-base");
 
   const loginModalRef = useRef(null);
   const SideBarModalRef = useRef(null);
 
-  const [variant, setVariant] = useState("login");
-
   const router = useRouter();
+
+  const showFonts = Component.showFonts || false;
 
   // Define routes where you don't want the component to appear
   const hiddenRoutes = ["/", "/choose-plan"]; // Add any routes where MyComponent should not be shown
-
   // Check if the current route is in the hidden routes list
   const showComponent = !hiddenRoutes.includes(router.pathname);
+
   const IoMenu = iconMapping["IoMdMenu"];
   const IoSearch = iconMapping["IoMdSearch"];
   const TiHomeOutline = iconMapping["TiHomeOutline"];
@@ -62,7 +64,6 @@ export default function App({ Component, pageProps }) {
       },
     },
   });
-  const [isCheckingUser, setIsCheckingUser] = useState(false);
   const checkLoginStatus = () => {
     try {
       setIsCheckingUser(true);
@@ -82,6 +83,7 @@ export default function App({ Component, pageProps }) {
   useEffect(() => {
     return () => checkLoginStatus();
   }, [router]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AIContext.Provider
@@ -100,6 +102,10 @@ export default function App({ Component, pageProps }) {
           setIsLoggedIn,
           isCheckingUser,
           setIsCheckingUser,
+          subscription,
+          setSubscription,
+          fontSize,
+          setFontSize,
         }}
       >
         {/* Conditionally render MyComponent based on the current route */}
@@ -123,6 +129,7 @@ export default function App({ Component, pageProps }) {
               Logout={Logout}
               IoSettings={IoSettings}
               IoSearch={IoSearch}
+              showFonts={showFonts}
             />
           )}
           {!showComponent ? (
