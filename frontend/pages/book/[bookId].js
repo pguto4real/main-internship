@@ -55,6 +55,9 @@ const BookDetails = ({ initialBookData, bookId }) => {
   useEffect(() => {
     // subscriptionRequired && router.push("/choose-plan");
   }, []);
+  const navigateToPlayer = () => {
+    router.push(`/player/${id}`);
+  };
   return (
     <div class="inner__wrapper">
       <div class="inner__book">
@@ -97,14 +100,14 @@ const BookDetails = ({ initialBookData, bookId }) => {
         <div class="inner-book__read--btn-wrapper">
           {isLoggedIn ? (
             <>
-              <button class="inner-book__read--btn" fdprocessedid="ny95gb">
+              <button class="inner-book__read--btn" fdprocessedid="ny95gb" onClick={navigateToPlayer}>
                 <div class="inner-book__read--icon">
                   <SlBookOpen />
                 </div>
 
                 <div class="inner-book__read--text">Read</div>
               </button>
-              <button class="inner-book__read--btn" fdprocessedid="cmcbun">
+              <button class="inner-book__read--btn" fdprocessedid="cmcbun" onClick={navigateToPlayer}>
                 <div class="inner-book__read--icon">
                   <AiOutlineAudio />
                 </div>
@@ -170,6 +173,8 @@ const BookDetails = ({ initialBookData, bookId }) => {
 };
 
 export default BookDetails;
+BookDetails.showWrapperFull = false;
+BookDetails.showFonts = false;
 export const getServerSideProps = async (context) => {
   const { bookId } = context.params; // Extract dynamic route param
   const bookData = await getBookById(bookId);

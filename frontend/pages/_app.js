@@ -2,7 +2,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import MainNavBar from "../components/MainNavBar";
 import SideBar from "../components/SideBar";
 import { AIContext, AuthProvider } from "../Helpers/Context";
-import checkCurrent from "../hook/checkCurrent";
+import checkCurrent from "../hook/formatTime";
 
 import "../styles/globals.css";
 import iconMapping from "../utils/iconMapping";
@@ -31,13 +31,43 @@ export default function App({ Component, pageProps }) {
   const SideBarModalRef = useRef(null);
 
   const router = useRouter();
+  const showFonts =
+    Component.showFonts !== undefined ? Component.showFonts : true;
+  const showComponent =
+    Component.showComponent !== undefined ? Component.showComponent : true;
+  const showSideBar =
+    Component.showSideBar !== undefined ? Component.showSideBar : true;
+  const showWrapperFull =
+    Component.showWrapperFull !== undefined ? Component.showWrapperFull : true;
+  const showMainNavBar =
+    Component.showMainNavBar !== undefined ? Component.showMainNavBar : true;
+  console.log(showComponent);
+  // // Define routes where you don't want the component to appear
+  // const hiddenRoutes = [
+  //   "/",
+  //   "/choose-plan",
+  //   /^\/player\/[a-zA-Z0-9]+$/, // Regex to match any /player/:bookId route
+  // ]; // Add any routes where MyComponent should not be shown
+  // // Check if the current route is in the hidden routes list
+  // const showComponent = !hiddenRoutes.some(route =>
+  //   typeof route === 'string'
+  //     ? router.pathname.includes(route)
+  //     : route.test(router.pathname) // Use regex test for dynamic routes
+  // );
 
-  const showFonts = Component.showFonts || false;
+  // console.log(showComponent)
 
-  // Define routes where you don't want the component to appear
-  const hiddenRoutes = ["/", "/choose-plan"]; // Add any routes where MyComponent should not be shown
-  // Check if the current route is in the hidden routes list
-  const showComponent = !hiddenRoutes.includes(router.pathname);
+  // const hiddenSideBarRoutes = [
+  //   "/",
+  //   "/choose-plan",
+
+  // ]; // Add any routes where MyComponent should not be shown
+  // // Check if the current route is in the hidden routes list
+  // const showSideBar = !hiddenSideBarRoutes.some(route =>
+  //   typeof route === 'string'
+  //     ? router.pathname.includes(route)
+  //     : route.test(router.pathname) // Use regex test for dynamic routes
+  // );
 
   const IoMenu = iconMapping["IoMdMenu"];
   const IoSearch = iconMapping["IoMdSearch"];
@@ -109,9 +139,9 @@ export default function App({ Component, pageProps }) {
         }}
       >
         {/* Conditionally render MyComponent based on the current route */}
-        <div className={`wrapper ${!showComponent && "wrapper__full"}`}>
+        <div className={`wrapper ${showWrapperFull && "wrapper__full"}`}>
           <Toaster className="!z-[100000]" />
-          {showComponent && (
+          {showMainNavBar && (
             <MainNavBar
               toggleSideBar={toggleSideBar}
               IoMenu={IoMenu}
@@ -119,7 +149,7 @@ export default function App({ Component, pageProps }) {
             />
           )}
 
-          {showComponent && (
+          {showSideBar && (
             <SideBar
               TiHomeOutline={TiHomeOutline}
               CiBookmark={CiBookmark}
@@ -132,20 +162,21 @@ export default function App({ Component, pageProps }) {
               showFonts={showFonts}
             />
           )}
-          {!showComponent ? (
+          {showComponent ? (
             // When showComponent is false
-            <>
-              {isModalOpen && <LoginModal toggleModal={toggleModal} />}
-              <Component {...pageProps} />
-            </>
-          ) : (
-            // When showComponent is true
             <div className="row">
               <div className="container">
                 {isModalOpen && <LoginModal toggleModal={toggleModal} />}
                 <Component {...pageProps} />
               </div>
             </div>
+          ) : (
+            // When showComponent is true
+
+            <>
+              {isModalOpen && <LoginModal toggleModal={toggleModal} />}
+              <Component {...pageProps} />
+            </>
           )}
         </div>
       </AIContext.Provider>

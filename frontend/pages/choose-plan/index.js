@@ -23,3 +23,7 @@ function index() {
 }
 
 export default index
+
+index.showSideBar = false
+index.showComponent = false
+index.showMainNavBar = false

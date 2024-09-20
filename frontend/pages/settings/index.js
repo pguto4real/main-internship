@@ -35,3 +35,4 @@ function settings() {
 }
 
 export default settings;
+settings.showWrapperFull = false

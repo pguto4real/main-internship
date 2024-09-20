@@ -38,7 +38,7 @@ export const selectedSection = async () => {
 
   export const getBookById = async (bookId) => {
     try {
-        console.log(bookId)
+      
         const { data } = await axios.get(`https://us-central1-summaristt.cloudfunctions.net/getBook?id=${bookId}`)
   
         return (data)

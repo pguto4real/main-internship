@@ -2,12 +2,10 @@ import Head from "next/head";
 
 import { useContext, useEffect, useState } from "react";
 
-
 import { AiFillAudio, AiFillBulb, AiFillFileText } from "react-icons/ai";
 import { BsStarFill, BsStarHalf } from "react-icons/bs";
 import { BiCrown } from "react-icons/bi";
 import { RiLeafLine } from "react-icons/ri";
-
 
 import Navbar from "../components/Navbar";
 
@@ -16,15 +14,18 @@ import Landing from "../components/Landing";
 import LoginModal from "../components/LoginModal";
 
 import { AIContext } from "../Helpers/Context";
-import checkCurrent from "../hook/checkCurrent";
+import checkCurrent from "../hook/formatTime";
 import { useRouter } from "next/router";
 export default function Home() {
   const router = useRouter();
-  const { isModalOpen, setIsModalOpen, loginModalRef,isLoggedIn,isCheckingUser
-  } = useContext(AIContext)
- 
+  const {
+    isModalOpen,
+    setIsModalOpen,
+    loginModalRef,
+    isLoggedIn,
+    isCheckingUser,
+  } = useContext(AIContext);
 
-  
   const [title, setTitle] = useState("Default Title");
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -43,7 +44,6 @@ export default function Home() {
 
   // Add and remove event listeners
   useEffect(() => {
-    
     if (isModalOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
@@ -55,13 +55,14 @@ export default function Home() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
 
-   isLoggedIn && router.push('/for-you');
+    isLoggedIn && router.push("/for-you");
   }, [isModalOpen]);
-  if(isCheckingUser){
-    return <div className="flex items-center justify-center h-[100vh]">
-
-    <span className="loading loading-ring  w-[15rem] h-[20rem]"></span>
-    </div> 
+  if (isCheckingUser) {
+    return (
+      <div className="flex items-center justify-center h-[100vh]">
+        <span className="loading loading-ring  w-[15rem] h-[20rem]"></span>
+      </div>
+    );
   }
   return (
     <div className="font-sans">
@@ -71,7 +72,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar toggleModal={toggleModal} />
-      
+
       <Landing toggleModal={toggleModal} />
       <section id="features">
         <div className="containers">
@@ -308,3 +309,6 @@ export default function Home() {
   );
 }
 
+Home.showSideBar = false;
+Home.showComponent = false;
+Home.showMainNavBar = false;

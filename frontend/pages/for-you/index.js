@@ -137,3 +137,6 @@ function Fea() {
 }
 
 export default Fea;
+Fea.showWrapperFull = false
+
+Fea.showFonts = false;
