@@ -47,3 +47,12 @@ export const selectedSection = async () => {
         console.log(error.message)
       }
   };
+  export const saveToLibrary = async (book,userId) => {
+    try {
+        const { data } = await axios.get(`https://us-central1-summaristt.cloudfunctions.net/getBook?id=${bookId}`)
+        return (data)
+      } catch (error) {
+        return []
+        console.log(error.message)
+      }
+  };

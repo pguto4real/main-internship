@@ -21,7 +21,8 @@ function SideBar({
     isLoggedIn,
     isCheckingUser,
     setUser,
-    user,
+    currentUser,
+    setCurrentUser,
     setIsLoggedIn,
     setIsModalOpen,
     isModalOpen,
@@ -33,7 +34,7 @@ function SideBar({
 
   const handleLogout = (e) => {
     signOut(firebaseAuth);
-    setUser({});
+    setCurrentUser({});
     setIsLoggedIn(false);
   };
 
@@ -61,7 +62,11 @@ function SideBar({
         <div className="sidebar__logo">
           <img src="/assets/logo.png" />
         </div>
-        <div className={`sidebar__wrapper ${showFonts && "!h-[calc(-140px+100vh)]"}`}>
+        <div
+          className={`sidebar__wrapper ${
+            showFonts && "!h-[calc(-140px+100vh)]"
+          }`}
+        >
           <div className="sidebar__top">
             <Link className="sidebar__link--wrapper" href="/for-you">
               <div className="sidebar__link--line "></div>
@@ -95,7 +100,10 @@ function SideBar({
             {showFonts && (
               <div className="sidebar__link--wrapper sidebar__font--size-wrapper">
                 <div
-                  className={`sidebar__link--text sidebar__font--size-icon ${fontSize === "text-base" && "sidebar__font--size-icon--active"}`}
+                  className={`sidebar__link--text sidebar__font--size-icon ${
+                    fontSize === "text-base" &&
+                    "sidebar__font--size-icon--active"
+                  }`}
                   onClick={() => toggleFontSize("text-base")}
                 >
                   <RiFontSize
@@ -105,7 +113,10 @@ function SideBar({
                   />
                 </div>
                 <div
-                  className={`sidebar__link--text sidebar__font--size-icon ${fontSize === "text-[18px]" && "sidebar__font--size-icon--active"}`}
+                  className={`sidebar__link--text sidebar__font--size-icon ${
+                    fontSize === "text-[18px]" &&
+                    "sidebar__font--size-icon--active"
+                  }`}
                   onClick={() => toggleFontSize("text-[18px]")}
                 >
                   <RiFontSize
@@ -115,7 +126,10 @@ function SideBar({
                   />
                 </div>
                 <div
-                  className={`sidebar__link--text sidebar__font--size-icon ${fontSize === "text-[22px]" && "sidebar__font--size-icon--active"}`}
+                  className={`sidebar__link--text sidebar__font--size-icon ${
+                    fontSize === "text-[22px]" &&
+                    "sidebar__font--size-icon--active"
+                  }`}
                   onClick={() => toggleFontSize("text-[22px]")}
                 >
                   <RiFontSize
@@ -126,7 +140,8 @@ function SideBar({
                 </div>
                 <div
                   className={`sidebar__link--text sidebar__font--size-icon ${
-                    fontSize === "text-[26px]" && "sidebar__font--size-icon--active"
+                    fontSize === "text-[26px]" &&
+                    "sidebar__font--size-icon--active"
                   }`}
                   onClick={() => toggleFontSize("text-[26px]")}
                 >

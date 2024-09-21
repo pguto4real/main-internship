@@ -57,8 +57,6 @@ function Fea() {
     suggestedSectionMutate();
   }, []);
 
-  console.log(books)
-  // console.log(isLoggedIn)
   const FaPlayCircle = iconMapping["FaPlayCircle"];
   const IoTimeOutline = iconMapping["IoTimeOutline"];
   const CiStar = iconMapping["CiStar"];

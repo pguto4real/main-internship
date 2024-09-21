@@ -5,16 +5,14 @@ import { getBookById } from "../../functions/fetDataFunctions";
 import iconMapping from "../../utils/iconMapping";
 import { useRouter } from "next/router";
 import { AIContext } from "../../Helpers/Context";
+import useFireStore from "../../hook/useFirestore";
 
 const BookDetails = ({ initialBookData, bookId }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const {
-    isLoggedIn,
-
-    setIsModalOpen,
-    isModalOpen,
-  } = useContext(AIContext);
+  const { isLoggedIn, currentUser, setIsModalOpen, isModalOpen,bookExist,
+    setBookExist } =
+    useContext(AIContext);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -30,34 +28,73 @@ const BookDetails = ({ initialBookData, bookId }) => {
     return <div>Loading...</div>;
   }
   const {
-    title,
-    author,
-    subTitle,
     audioLink,
+    author,
+    authorDescription,
     averageRating,
     bookDescription,
     id,
     imageLink,
     keyIdeas,
+    status,
+    subTitle,
+    subscriptionRequired,
+    summary,
+    tags,
+    title,
     totalRating,
     type,
-    subscriptionRequired,
-    authorDescription,
-    tags,
   } = initialBookData;
-  console.log(initialBookData);
+  // console.log(initialBookData);
   const IoTimeOutline = iconMapping["IoTimeOutline"];
   const CiStar = iconMapping["CiStar"];
   const AiOutlineAudio = iconMapping["AiOutlineAudio"];
   const HiOutlineLightBulb = iconMapping["HiOutlineLightBulb"];
   const SlBookOpen = iconMapping["SlBookOpen"];
   const FaBookmark = iconMapping["FaBookmark"];
-  useEffect(() => {
-    // subscriptionRequired && router.push("/choose-plan");
-  }, []);
+  const FaRegBookmark = iconMapping["FaRegBookmark"];
+
   const navigateToPlayer = () => {
     router.push(`/player/${id}`);
   };
+
+  const addOrRemoveBook = () => {
+ 
+    saveToLibrary(bookToSave, currentUser);
+  };
+
+  const { saveToLibrary, isBookExist } = useFireStore(currentUser);
+  const bookToSave = {
+    id: id,
+    author: author,
+    title: title,
+    subTitle: subTitle,
+    imageLink: imageLink,
+    audioLink: audioLink,
+    authorDescription: authorDescription,
+    averageRating: averageRating,
+    bookDescription: bookDescription,
+    keyIdeas: keyIdeas,
+    status: status,
+    subscriptionRequired: subscriptionRequired,
+    summary: summary,
+    tags: tags,
+    totalRating: totalRating,
+    type: type,
+    userId: currentUser?.uid,
+  };
+
+  // console.log(currentUser)
+  useEffect(() => {
+    const saveBookData = async () => {
+      if (currentUser?.uid) {
+        const bookeExist = isBookExist(bookToSave, currentUser);
+   
+      }
+    };
+
+    saveBookData();
+  }, [currentUser,isBookExist]);
   return (
     <div class="inner__wrapper">
       <div class="inner__book">
@@ -100,14 +137,22 @@ const BookDetails = ({ initialBookData, bookId }) => {
         <div class="inner-book__read--btn-wrapper">
           {isLoggedIn ? (
             <>
-              <button class="inner-book__read--btn" fdprocessedid="ny95gb" onClick={navigateToPlayer}>
+              <button
+                class="inner-book__read--btn"
+                fdprocessedid="ny95gb"
+                onClick={navigateToPlayer}
+              >
                 <div class="inner-book__read--icon">
                   <SlBookOpen />
                 </div>
 
                 <div class="inner-book__read--text">Read</div>
               </button>
-              <button class="inner-book__read--btn" fdprocessedid="cmcbun" onClick={navigateToPlayer}>
+              <button
+                class="inner-book__read--btn"
+                fdprocessedid="cmcbun"
+                onClick={navigateToPlayer}
+              >
                 <div class="inner-book__read--icon">
                   <AiOutlineAudio />
                 </div>
@@ -140,12 +185,26 @@ const BookDetails = ({ initialBookData, bookId }) => {
             </>
           )}
         </div>
-        <div class="inner-book__bookmark">
-          <div class="inner-book__bookmark--icon">
-            <FaBookmark />
+        {bookExist ? (
+          <div class="inner-book__bookmark" onClick={addOrRemoveBook}>
+            <div class="inner-book__bookmark--icon">
+              <FaBookmark />
+            </div>
+
+            <div class="inner-book__bookmark--text">Saved in My Library</div>
           </div>
-          <div class="inner-book__bookmark--text">Saved in My Library</div>
-        </div>
+        ) : (
+          <div class="inner-book__bookmark" onClick={addOrRemoveBook}>
+            <div class="inner-book__bookmark--icon">
+              <FaRegBookmark />
+            </div>
+
+            <div class="inner-book__bookmark--text">
+              Add title to My Library
+            </div>
+          </div>
+        )}
+
         <div class="inner-book__secondary--title">What's it about?</div>
         <div class="inner-book__tags--wrapper">
           {tags.map((tag, index) => (

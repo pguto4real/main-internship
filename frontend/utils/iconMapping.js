@@ -5,6 +5,7 @@ import {
   FaUser,
   FaPlayCircle,
   FaBookmark,
+  FaRegBookmark,
 } from "react-icons/fa";
 import { FaRegCirclePlay } from "react-icons/fa6";
 import { MdAlarm, MdHome } from "react-icons/md";
@@ -56,6 +57,7 @@ const iconMapping = {
   RiReplay10Line,
   RiFontSize,
   IoPause,
+  FaRegBookmark,
 };
 
 export default iconMapping;

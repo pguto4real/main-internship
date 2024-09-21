@@ -3,7 +3,7 @@ import MainNavBar from "../components/MainNavBar";
 import SideBar from "../components/SideBar";
 import { AIContext, AuthProvider } from "../Helpers/Context";
 import checkCurrent from "../hook/formatTime";
-
+import { useAuthState } from "react-firebase-hooks/auth";
 import "../styles/globals.css";
 import iconMapping from "../utils/iconMapping";
 import {
@@ -16,16 +16,18 @@ import { useEffect, useRef, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { firebaseAuth } from "../firebase/connectFirebase";
 import LoginModal from "../components/LoginModal";
+import useCurrentUser from "../hook/useCurrentUser";
 
 export default function App({ Component, pageProps }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-  const [user, setUser] = useState({});
+  const [currentUser, setCurrentUser] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [variant, setVariant] = useState("login");
   const [isCheckingUser, setIsCheckingUser] = useState(false);
-  const [subscription, setSubscription] = useState(false);
+  const [subscription, setSubscription] = useState(true);
   const [fontSize, setFontSize] = useState("text-base");
+  const [bookExist, setBookExist] = useState(false);
 
   const loginModalRef = useRef(null);
   const SideBarModalRef = useRef(null);
@@ -41,7 +43,7 @@ export default function App({ Component, pageProps }) {
     Component.showWrapperFull !== undefined ? Component.showWrapperFull : true;
   const showMainNavBar =
     Component.showMainNavBar !== undefined ? Component.showMainNavBar : true;
-  console.log(showComponent);
+
   // // Define routes where you don't want the component to appear
   // const hiddenRoutes = [
   //   "/",
@@ -94,25 +96,30 @@ export default function App({ Component, pageProps }) {
       },
     },
   });
-  const checkLoginStatus = () => {
-    try {
-      setIsCheckingUser(true);
+  // const checkLoginStatus = () => {
+  //   if(user){
+  //     setIsLoggedIn(true);
+  //     setCurrentUser(user)
+  //     }
+  //   console.log("user", user);
+  // };
 
-      onAuthStateChanged(firebaseAuth, (user) => {
-        if (user) {
-          setUser(user);
-          setIsLoggedIn(true);
-        }
-      });
-      setIsCheckingUser(false);
-    } catch (error) {
-      console.log("Error in getCurrentUser controller", error.message);
-    }
-  };
-
+  // useEffect(() => {
+  //   return () => checkLoginStatus();
+  // }, []);
+  const { user, loading, error } = useCurrentUser();
   useEffect(() => {
-    return () => checkLoginStatus();
-  }, [router]);
+    if (user) {
+      setIsLoggedIn(true);
+      setCurrentUser(user);
+    } else {
+      setIsLoggedIn(false);
+
+      setCurrentUser(null);
+    }
+  }, [user]);
+  if (!loading) {
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -126,8 +133,8 @@ export default function App({ Component, pageProps }) {
           setIsSideBarOpen,
           loginModalRef,
           SideBarModalRef,
-          user,
-          setUser,
+          currentUser,
+          setCurrentUser,
           isLoggedIn,
           setIsLoggedIn,
           isCheckingUser,
@@ -136,6 +143,8 @@ export default function App({ Component, pageProps }) {
           setSubscription,
           fontSize,
           setFontSize,
+          bookExist,
+          setBookExist,
         }}
       >
         {/* Conditionally render MyComponent based on the current route */}
@@ -162,7 +171,9 @@ export default function App({ Component, pageProps }) {
               showFonts={showFonts}
             />
           )}
-          {showComponent ? (
+          {loading ? (
+            <div>Loading</div>
+          ) : showComponent ? (
             // When showComponent is false
             <div className="row">
               <div className="container">
