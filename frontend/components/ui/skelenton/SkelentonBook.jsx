@@ -5,13 +5,18 @@ function SkelentonBook({ title, sub_title }) {
   return (
     <>
       <div className="for-you__title">{title}</div>
-      <div className="for-you__sub--title">{sub_title}</div>
+      {sub_title === "" ? (
+        <Skeleton height={20} width={"10%"} borderRadius={0} />
+      ) : (
+        <div className="for-you__sub--title">{sub_title}</div>
+      )}
+
       <div className="for-you__recommended--books">
         {new Array(7).fill(0).map((_, index) => (
           <a className="for-you__recommended--books-link">
             <figure className="book__image--wrapper mb-9">
               <div className="book__image block">
-                <Skeleton height={200} width={"100%"} />
+                <Skeleton height={200} width={"100%"}  borderRadius={0}  />
               </div>
             </figure>
             <div className="recommended__book--title">

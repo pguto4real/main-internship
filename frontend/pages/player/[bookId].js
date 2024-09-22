@@ -7,13 +7,20 @@ import { useRouter } from "next/router";
 import { AIContext } from "../../Helpers/Context";
 import NotLoggedIn from "../../components/NotLoggedIn";
 import formatTime from "../../hook/formatTime";
+import useFireStore from "../../hook/useFirestore";
 
 const BookDetails = ({ initialBookData, bookId }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const { isLoggedIn, fontSize, setIsModalOpen, isModalOpen, subscription } =
-    useContext(AIContext);
+  const {
+    isLoggedIn,
+    fontSize,
+    setIsModalOpen,
+    isModalOpen,
+    subscription,
+    currentUser,
+  } = useContext(AIContext);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -28,7 +35,6 @@ const BookDetails = ({ initialBookData, bookId }) => {
   if (isFetching) {
     return <div>Loading...</div>;
   }
-
   const {
     title,
     author,
@@ -92,11 +98,32 @@ const BookDetails = ({ initialBookData, bookId }) => {
     audioRef.current.currentTime = newTime;
   };
   const handleAudioEnded = () => {
-    alert('Audio has finished playing!');
+    if (currentUser?.uid) {
+      saveToFinished(bookToSave, currentUser);
+    }
   };
-  
-  // console.log(duration)
-  // console.log(initialBookData)
+  const { saveToFinished } = useFireStore();
+  const bookToSave = {
+    id: id,
+    author: author,
+    title: title,
+    subTitle: subTitle,
+    imageLink: imageLink,
+    audioLink: audioLink,
+    authorDescription: authorDescription,
+    averageRating: averageRating,
+    bookDescription: bookDescription,
+    keyIdeas: keyIdeas,
+    status: status,
+    subscriptionRequired: subscriptionRequired,
+    summary: summary,
+    tags: tags,
+    totalRating: totalRating,
+    type: type,
+    userId: currentUser?.uid,
+  };
+
+ 
 
   return (
     <>

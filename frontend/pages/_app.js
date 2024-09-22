@@ -17,6 +17,7 @@ import { Toaster } from "react-hot-toast";
 import { firebaseAuth } from "../firebase/connectFirebase";
 import LoginModal from "../components/LoginModal";
 import useCurrentUser from "../hook/useCurrentUser";
+import useFireStore from "../hook/useFirestore";
 
 export default function App({ Component, pageProps }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,6 +29,8 @@ export default function App({ Component, pageProps }) {
   const [subscription, setSubscription] = useState(true);
   const [fontSize, setFontSize] = useState("text-base");
   const [bookExist, setBookExist] = useState(false);
+  const [booksInLibrary, setBooksInLibrary] = useState([]);
+  const [booksInCompleted, setBooksInCompleted] = useState([]);
 
   const loginModalRef = useRef(null);
   const SideBarModalRef = useRef(null);
@@ -108,6 +111,7 @@ export default function App({ Component, pageProps }) {
   //   return () => checkLoginStatus();
   // }, []);
   const { user, loading, error } = useCurrentUser();
+
   useEffect(() => {
     if (user) {
       setIsLoggedIn(true);
@@ -145,6 +149,10 @@ export default function App({ Component, pageProps }) {
           setFontSize,
           bookExist,
           setBookExist,
+          booksInLibrary,
+          setBooksInLibrary,
+          booksInCompleted,
+          setBooksInCompleted,
         }}
       >
         {/* Conditionally render MyComponent based on the current route */}

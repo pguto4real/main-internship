@@ -63,7 +63,7 @@ const BookDetails = ({ initialBookData, bookId }) => {
     saveToLibrary(bookToSave, currentUser);
   };
 
-  const { saveToLibrary, isBookExist } = useFireStore(currentUser);
+  const { saveToLibrary, isBookExist } = useFireStore();
   const bookToSave = {
     id: id,
     author: author,

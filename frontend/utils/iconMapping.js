@@ -23,7 +23,7 @@ import {
 } from "react-icons/ri";
 import { FiHelpCircle } from "react-icons/fi";
 import { HiOutlineLightBulb } from "react-icons/hi";
-import { AiOutlineAudio } from "react-icons/ai";
+import { AiOutlineAudio,AiOutlineLoading3Quarters } from "react-icons/ai";
 import { TbLogout, TbLogout2 } from "react-icons/tb";
 import { SlBookOpen } from "react-icons/sl";
 
@@ -58,6 +58,7 @@ const iconMapping = {
   RiFontSize,
   IoPause,
   FaRegBookmark,
+  AiOutlineLoading3Quarters
 };
 
 export default iconMapping;
