@@ -98,7 +98,7 @@ const BookDetails = ({ initialBookData, bookId }) => {
   return (
     <div class="inner__wrapper">
       <div class="inner__book">
-        <div class="inner-book__title">{title} </div>
+        <div class="inner-book__title">{title} {subscriptionRequired && "(Premium)"} </div>
         <div class="inner-book__author">{author}</div>
         <div class="inner-book__sub--title">{subTitle}</div>
         <div class="inner-book__wrapper">

@@ -6,6 +6,7 @@ import SearchSkelentons from "./ui/skelenton/SearchSkelentons";
 import iconMapping from "../utils/iconMapping";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import formatTime from "../hook/formatTime";
 
 function MainNavBar({ IoSearch, IoMenu, toggleSideBar }) {
   const {
@@ -20,10 +21,14 @@ function MainNavBar({ IoSearch, IoMenu, toggleSideBar }) {
     setQuery,
   } = useContext(AIContext);
 
+  const [audioDuration, setAudioDuration] = useState(null);
+
   const IoMdSearch = iconMapping["IoMdSearch"];
   const IoMdClose = iconMapping["IoMdClose"];
 
   const router = useRouter();
+
+  const { formatTimeData } = formatTime();
 
   const handleClickOutside = (event) => {
     if (
@@ -51,8 +56,10 @@ function MainNavBar({ IoSearch, IoMenu, toggleSideBar }) {
       setSearchBooks([]);
     }
   };
-  const navigateToBooks = () => {
-    console.log("clicked");
+
+  const handleAudioLoadedMetadata = (event) => {
+    const duration = event.target.duration;
+    setAudioDuration(duration);
   };
   // Add and remove event listeners
   useEffect(() => {
@@ -130,7 +137,7 @@ function MainNavBar({ IoSearch, IoMenu, toggleSideBar }) {
             {searchBooks.map((book) => {
               return (
                 <Link class="search__book--link" href={`/book/${book.id}`}>
-                  <audio src="https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fhow-to-win-friends-and-influence-people.mp3?alt=media&amp;token=60872755-13fc-43f4-8b75-bae3fcd73991"></audio>
+                  <audio onLoadedMetadata={handleAudioLoadedMetadata} src={book.audioLink}></audio>
                   <figure class="book__image--wrapper !h-[80px] !w-[80px] !min-w-[80px]">
                     <img
                       class="book__image block"
@@ -157,7 +164,7 @@ function MainNavBar({ IoSearch, IoMenu, toggleSideBar }) {
                             <path d="M13 7h-2v6h6v-2h-4z"></path>
                           </svg>
                         </div>
-                        <div class="recommended__book--details-text">03:24</div>
+                        <div class="recommended__book--details-text">{formatTimeData(audioDuration)}</div>
                       </div>
                     </div>
                   </div>

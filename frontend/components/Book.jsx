@@ -1,8 +1,9 @@
 import { AIContext } from "../Helpers/Context";
 import iconMapping from "../utils/iconMapping";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import SkelentonBook from "./ui/skelenton/SkelentonBook";
 import Link from "next/link";
+import formatTime from "../hook/formatTime";
 
 function Book({ book, loading }) {
   // console.log(book);
@@ -17,17 +18,30 @@ function Book({ book, loading }) {
     subscriptionRequired,
     totalRating,
   } = book;
+
+  const [audioDuration, setAudioDuration] = useState(null);
+
+  const { formatTimeData } = formatTime();
   const { isCheckingUser, setIsCheckingUser } = useContext(AIContext);
+
+  const handleAudioLoadedMetadata = (event) => {
+    const duration = event.target.duration;
+    setAudioDuration(duration);
+  };
+
   const FaPlayCircle = iconMapping["FaPlayCircle"];
   const IoTimeOutline = iconMapping["IoTimeOutline"];
   const CiStar = iconMapping["CiStar"];
   return (
     <Link className="for-you__recommended--books-link" href={`/book/${id}`}>
-      {
-        subscriptionRequired && <div class="book__pill book__pill--subscription-required">Premium</div>
-      }
-      
-      <audio src={audioLink}></audio>
+      {subscriptionRequired && (
+        <div class="book__pill book__pill--subscription-required">Premium</div>
+      )}
+
+      <audio
+        src={audioLink}
+        onLoadedMetadata={handleAudioLoadedMetadata}
+      ></audio>
       <figure className="book__image--wrapper mb-2">
         <img className="book__image block" src={imageLink} alt="book" />
       </figure>
@@ -39,7 +53,7 @@ function Book({ book, loading }) {
           <div className="recommended__book--details-icon">
             <IoTimeOutline />
           </div>
-          <div className="recommended__book--details-text">03:24</div>
+          <div className="recommended__book--details-text">{formatTimeData(audioDuration)}</div>
         </div>
         <div className="recommended__book--details">
           <div className="recommended__book--details-icon">
