@@ -10,7 +10,7 @@ import {
 import { FaRegCirclePlay } from "react-icons/fa6";
 import { MdAlarm, MdHome } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
-import { IoMdMenu, IoMdSearch } from "react-icons/io";
+import { IoMdMenu, IoMdSearch ,IoMdClose } from "react-icons/io";
 import { IoSettingsOutline, IoTimeOutline, IoPause } from "react-icons/io5";
 import { TiHomeOutline } from "react-icons/ti";
 import { CiBookmark, CiStar } from "react-icons/ci";
@@ -37,6 +37,7 @@ const iconMapping = {
   FcGoogle,
   IoMdMenu,
   IoMdSearch,
+  IoMdClose ,
   IoSettingsOutline,
   TiHomeOutline,
   CiBookmark,

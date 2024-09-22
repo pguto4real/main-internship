@@ -38,7 +38,7 @@ function Library() {
         "https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fcan't-hurt-me.mp3?alt=media&amp;token=7de57406-60ca-49d6-9113-857507f48312",
     },
   ];
-  console.log(booksInCompleted);
+ 
   const {
     getAllSavedBooksByUser,
     loadingBooks,
