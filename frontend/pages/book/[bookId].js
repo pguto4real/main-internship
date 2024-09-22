@@ -11,7 +11,7 @@ const BookDetails = ({ initialBookData, bookId }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { isLoggedIn, currentUser, setIsModalOpen, isModalOpen,bookExist,
-    setBookExist } =
+    setBookExist,query,setQuery } =
     useContext(AIContext);
 
   const toggleModal = () => {

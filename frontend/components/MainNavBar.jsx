@@ -4,6 +4,8 @@ import React, { useContext, useEffect, useState } from "react";
 
 import SearchSkelentons from "./ui/skelenton/SearchSkelentons";
 import iconMapping from "../utils/iconMapping";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 function MainNavBar({ IoSearch, IoMenu, toggleSideBar }) {
   const {
@@ -14,12 +16,14 @@ function MainNavBar({ IoSearch, IoMenu, toggleSideBar }) {
     setIsSearching,
     searchBooks,
     setSearchBooks,
+    query,
+    setQuery,
   } = useContext(AIContext);
-
-  const [query, setQuery] = useState("");
 
   const IoMdSearch = iconMapping["IoMdSearch"];
   const IoMdClose = iconMapping["IoMdClose"];
+
+  const router = useRouter();
 
   const handleClickOutside = (event) => {
     if (
@@ -47,7 +51,9 @@ function MainNavBar({ IoSearch, IoMenu, toggleSideBar }) {
       setSearchBooks([]);
     }
   };
-
+  const navigateToBooks = () => {
+    console.log("clicked");
+  };
   // Add and remove event listeners
   useEffect(() => {
     if (isSideBarOpen) {
@@ -55,17 +61,35 @@ function MainNavBar({ IoSearch, IoMenu, toggleSideBar }) {
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSideBarOpen]);
+  useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       handleSearch(query);
     }, 300); // Debounce for 300ms
 
     // Cleanup the event listener on component unmount
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
       clearTimeout(delayDebounceFn);
     };
-  }, [isSideBarOpen, query]);
+  }, [query]);
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setQuery(""); // Reset the query when route changes
+    };
 
+    // Subscribe to route change events
+    router.events.on("routeChangeStart", handleRouteChange);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChange);
+    };
+  }, [router.events]);
   return (
     <div className="search__background">
       <div className="search__wrapper">
@@ -84,7 +108,14 @@ function MainNavBar({ IoSearch, IoMenu, toggleSideBar }) {
                 onChange={(e) => setQuery(e.target.value)}
               />
               <div className="search__icon">
-                {query ? <IoMdClose onClick={()=>setQuery("")} className="cursor-pointer"/> : <IoMdSearch />}
+                {query ? (
+                  <IoMdClose
+                    onClick={() => setQuery("")}
+                    className="cursor-pointer"
+                  />
+                ) : (
+                  <IoMdSearch />
+                )}
               </div>
             </div>
           </div>
@@ -98,7 +129,7 @@ function MainNavBar({ IoSearch, IoMenu, toggleSideBar }) {
           <div class="search__books--wrapper">
             {searchBooks.map((book) => {
               return (
-                <a class="search__book--link" href="/book/5bxl50cz4bt">
+                <Link class="search__book--link" href={`/book/${book.id}`}>
                   <audio src="https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fhow-to-win-friends-and-influence-people.mp3?alt=media&amp;token=60872755-13fc-43f4-8b75-bae3fcd73991"></audio>
                   <figure class="book__image--wrapper !h-[80px] !w-[80px] !min-w-[80px]">
                     <img
@@ -130,7 +161,7 @@ function MainNavBar({ IoSearch, IoMenu, toggleSideBar }) {
                       </div>
                     </div>
                   </div>
-                </a>
+                </Link>
               );
             })}
           </div>

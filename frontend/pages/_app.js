@@ -33,6 +33,7 @@ export default function App({ Component, pageProps }) {
   const [booksInCompleted, setBooksInCompleted] = useState([]);
   const [searchBooks, setSearchBooks] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [query, setQuery] = useState("");
 
   const loginModalRef = useRef(null);
   const SideBarModalRef = useRef(null);
@@ -159,6 +160,8 @@ export default function App({ Component, pageProps }) {
           setSearchBooks,
           isSearching,
           setIsSearching,
+          query,
+          setQuery,
         }}
       >
         {/* Conditionally render MyComponent based on the current route */}
