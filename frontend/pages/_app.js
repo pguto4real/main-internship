@@ -2,8 +2,6 @@ import { onAuthStateChanged } from "firebase/auth";
 import MainNavBar from "../components/MainNavBar";
 import SideBar from "../components/SideBar";
 import { AIContext, AuthProvider } from "../Helpers/Context";
-import checkCurrent from "../hook/formatTime";
-import { useAuthState } from "react-firebase-hooks/auth";
 import "../styles/globals.css";
 import iconMapping from "../utils/iconMapping";
 import {
@@ -14,10 +12,14 @@ import {
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { Toaster } from "react-hot-toast";
-import { firebaseAuth } from "../firebase/connectFirebase";
+
 import LoginModal from "../components/LoginModal";
 import useCurrentUser from "../hook/useCurrentUser";
-import useFireStore from "../hook/useFirestore";
+import payments from "../lib/initializeStripe";
+
+import { getProducts, Product } from "@stripe/firestore-stripe-payments";
+import { db } from "../firebase/connectFirebase";
+import { collection, getDocs,query } from "firebase/firestore";
 
 export default function App({ Component, pageProps }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,7 +28,7 @@ export default function App({ Component, pageProps }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [variant, setVariant] = useState("login");
   const [isCheckingUser, setIsCheckingUser] = useState(false);
-  const [subscription, setSubscription] = useState(true);
+  const [subscription, setSubscription] = useState(false);
   const [fontSize, setFontSize] = useState("text-base");
   const [bookExist, setBookExist] = useState(false);
   const [booksInLibrary, setBooksInLibrary] = useState([]);
@@ -34,6 +36,9 @@ export default function App({ Component, pageProps }) {
   const [searchBooks, setSearchBooks] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [query, setQuery] = useState("");
+
+  const [products, setProducts] = useState([]); // Add products state
+  const [loadingProducts, setLoadingProducts] = useState(true);
 
   const loginModalRef = useRef(null);
   const SideBarModalRef = useRef(null);
@@ -49,33 +54,6 @@ export default function App({ Component, pageProps }) {
     Component.showWrapperFull !== undefined ? Component.showWrapperFull : true;
   const showMainNavBar =
     Component.showMainNavBar !== undefined ? Component.showMainNavBar : true;
-
-  // // Define routes where you don't want the component to appear
-  // const hiddenRoutes = [
-  //   "/",
-  //   "/choose-plan",
-  //   /^\/player\/[a-zA-Z0-9]+$/, // Regex to match any /player/:bookId route
-  // ]; // Add any routes where MyComponent should not be shown
-  // // Check if the current route is in the hidden routes list
-  // const showComponent = !hiddenRoutes.some(route =>
-  //   typeof route === 'string'
-  //     ? router.pathname.includes(route)
-  //     : route.test(router.pathname) // Use regex test for dynamic routes
-  // );
-
-  // console.log(showComponent)
-
-  // const hiddenSideBarRoutes = [
-  //   "/",
-  //   "/choose-plan",
-
-  // ]; // Add any routes where MyComponent should not be shown
-  // // Check if the current route is in the hidden routes list
-  // const showSideBar = !hiddenSideBarRoutes.some(route =>
-  //   typeof route === 'string'
-  //     ? router.pathname.includes(route)
-  //     : route.test(router.pathname) // Use regex test for dynamic routes
-  // );
 
   const IoMenu = iconMapping["IoMdMenu"];
   const IoSearch = iconMapping["IoMdSearch"];
@@ -102,17 +80,7 @@ export default function App({ Component, pageProps }) {
       },
     },
   });
-  // const checkLoginStatus = () => {
-  //   if(user){
-  //     setIsLoggedIn(true);
-  //     setCurrentUser(user)
-  //     }
-  //   console.log("user", user);
-  // };
 
-  // useEffect(() => {
-  //   return () => checkLoginStatus();
-  // }, []);
   const { user, loading, error } = useCurrentUser();
 
   useEffect(() => {
@@ -125,8 +93,41 @@ export default function App({ Component, pageProps }) {
       setCurrentUser(null);
     }
   }, [user]);
-  if (!loading) {
-  }
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoadingProducts(true)
+        const productDocs = (await getDocs(collection(db, "products"))).docs;
+        const productsWithPrices = [];
+
+        for (const doc of productDocs) {
+          const productData = { id: doc.id, ...doc.data() };
+
+          const pricesRef = collection(db, "products", doc.id, "prices");
+          const pricesQuerySnap = await getDocs(pricesRef);
+
+          pricesQuerySnap.forEach((priceDoc) => {
+        
+            productsWithPrices.push({
+              ...productData,
+              priceId: priceDoc.id,
+              unitAmount: priceDoc.data().unit_amount,
+              prices: priceDoc.data(),
+            });
+          });
+        }
+
+     
+        setProducts(productsWithPrices); // Set the products to state
+      } catch (error) {
+        console.error("Error fetching products from Firestore: ", error);
+      } finally {
+        setLoadingProducts(false); // Mark loading as complete
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -162,6 +163,8 @@ export default function App({ Component, pageProps }) {
           setIsSearching,
           query,
           setQuery,
+          products,
+          loadingProducts,
         }}
       >
         {/* Conditionally render MyComponent based on the current route */}
@@ -211,3 +214,18 @@ export default function App({ Component, pageProps }) {
     </QueryClientProvider>
   );
 }
+
+export const getServerSideProps = async () => {
+  const products = await getProducts(payments, {
+    includePrices: true,
+    activeOnly: true,
+  })
+    .then((res) => res)
+    .catch((error) => console.log(error.message));
+
+  return {
+    props: {
+      products,
+    },
+  };
+};

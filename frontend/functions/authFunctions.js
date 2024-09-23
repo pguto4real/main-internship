@@ -1,6 +1,7 @@
 
 import { createUserWithEmailAndPassword, GoogleAuthProvider, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { firebaseAuth } from "../firebase/connectFirebase";
+import { db, firebaseAuth } from "../firebase/connectFirebase";
+import { doc, setDoc } from "firebase/firestore";
 const googleProvider = new GoogleAuthProvider();
 
 export const signUp = async ({ email, password }) => {
@@ -10,6 +11,17 @@ export const signUp = async ({ email, password }) => {
       email,
       password
     );
+    if(userCredential){
+      
+      const userDocRef = doc(db, 'users', userCredential.user.uid);
+      await setDoc(userDocRef, {
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+   
+        createdAt: new Date().toISOString(),
+      });
+        
+    }
     return userCredential.user;
   } catch (error) {
     throw new Error(error.message);
@@ -23,6 +35,17 @@ export const login = async ({ email, password }) => {
       email,
       password
     );
+    if(userCredential){
+      
+      const userDocRef = doc(db, 'users', userCredential.user.uid);
+      await setDoc(userDocRef, {
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+   
+        createdAt: new Date().toISOString(),
+      });
+        
+    }
     return userCredential.user;
   } catch (error) {
     throw new Error(error.message);
@@ -36,6 +59,17 @@ export const guestLogin = async ({ email, password }) => {
       'a@a.com',
       'dallastx1'
     );
+    if(userCredential){
+      
+      const userDocRef = doc(db, 'users', userCredential.user.uid);
+      await setDoc(userDocRef, {
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+   
+        createdAt: new Date().toISOString(),
+      });
+        
+    }
     return userCredential.user;
   } catch (error) {
     throw new Error(error.message);
@@ -47,6 +81,18 @@ export const signInWithGoogle = async () => {
       const result = await signInWithPopup(firebaseAuth, googleProvider);
       // The signed-in user info
       const user = result.user;
+
+      if(user){
+      
+        const userDocRef = doc(db, 'users', user.uid);
+        await setDoc(userDocRef, {
+          uid: user.uid,
+          email: user.email,
+     
+          createdAt: new Date().toISOString(),
+        });
+          
+      }
       return user;
     } catch (error) {
       console.error('Error signing in with Google:', error.message);
