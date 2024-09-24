@@ -13,15 +13,14 @@ import { addDoc, collection, onSnapshot } from 'firebase/firestore'
   })
   
   const loadCheckout = async (priceId:string,userEmail:string) => {
+    console.log(userEmail)
     try {
-      const checkoutSessionsRef = collection(db, 'customers', userEmail, 'checkout_sessions');
+      const checkoutSessionsRef = collection(db, 'users', userEmail, 'checkout_sessions');
       const docRef = await addDoc(checkoutSessionsRef, {
         price: priceId,
         success_url: window.location.origin,
         cancel_url: window.location.origin,
       });
-
-
 
       // Wait for the CheckoutSession to get attached by the extension
       onSnapshot(docRef, (snap) => {

@@ -1,11 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 
-
 import SkelentonForYou from "../../components/ui/skelenton/SkelentonForYou";
 import SkelentonBook from "../../components/ui/skelenton/SkelentonBook";
 import BooksSection from "../../components/BooksSection";
 
-import { AIContext } from "../../Helpers/Context"; 
+import { AIContext } from "../../Helpers/Context";
 import iconMapping from "../../utils/iconMapping";
 import React, { useContext, useEffect, useState } from "react";
 import {
@@ -14,14 +13,14 @@ import {
   suggestedSection,
 } from "../../functions/fetDataFunctions";
 import Link from "next/link";
-
-
+import formatTimeMins from "../../hook/formatTimeMins";
 
 function Fea() {
   const { isCheckingUser, setIsCheckingUser } = useContext(AIContext);
   const [selected, setIsSelected] = useState([]);
   const [books, setBooks] = useState([]);
   const [suggested, setSuggested] = useState([]);
+  const [selectedAudioudioDuration, setSelectedAudioDuration] = useState(null);
   // console.log(object)
 
   // get selected books
@@ -56,7 +55,11 @@ function Fea() {
     recomendedSectionMutate();
     suggestedSectionMutate();
   }, []);
-
+  const handleSelectedAudioLoadedMetadata = (event) => {
+    const duration = event.target.duration;
+    setSelectedAudioDuration(duration);
+  };
+  const { formatTimeMinData } = formatTimeMins();
   const FaPlayCircle = iconMapping["FaPlayCircle"];
   const IoTimeOutline = iconMapping["IoTimeOutline"];
   const CiStar = iconMapping["CiStar"];
@@ -68,7 +71,10 @@ function Fea() {
         ) : (
           <>
             <div className="for-you__title">Selected just for you</div>
-            <audio src="https://firebasestorage.googleapis.com/v0/b/summaristt.appspot.com/o/books%2Faudios%2Fthe-lean-startup.mp3?alt=media&amp;token=c2f2b1d4-eaf2-4d47-8c8a-7a8fd062a47e"></audio>
+            <audio
+              src={selected.audioLink}
+              onLoadedMetadata={handleSelectedAudioLoadedMetadata}
+            ></audio>
 
             <Link className="selected__book" href={`/book/${selected.id}`}>
               <div className="selected__book--sub-title">
@@ -93,7 +99,7 @@ function Fea() {
                       <FaPlayCircle />
                     </div>
                     <div className="selected__book--duration">
-                      3 mins 23 secs
+                   {formatTimeMinData(selectedAudioudioDuration)}
                     </div>
                   </div>
                 </div>
@@ -135,6 +141,6 @@ function Fea() {
 }
 
 export default Fea;
-Fea.showWrapperFull = false
+Fea.showWrapperFull = false;
 
 Fea.showFonts = false;

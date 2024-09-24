@@ -16,13 +16,15 @@ function Book({ book, loading }) {
     id,
     status,
     subscriptionRequired,
+    averageRating,
     totalRating,
+    
   } = book;
 
   const [audioDuration, setAudioDuration] = useState(null);
 
   const { formatTimeData } = formatTime();
-  const { isCheckingUser, setIsCheckingUser } = useContext(AIContext);
+  const { isCheckingUser, setIsCheckingUser,subscription } = useContext(AIContext);
 
   const handleAudioLoadedMetadata = (event) => {
     const duration = event.target.duration;
@@ -34,7 +36,7 @@ function Book({ book, loading }) {
   const CiStar = iconMapping["CiStar"];
   return (
     <Link className="for-you__recommended--books-link" href={`/book/${id}`}>
-      {subscriptionRequired && (
+      {subscriptionRequired && !subscription && (
         <div class="book__pill book__pill--subscription-required">Premium</div>
       )}
 
@@ -59,7 +61,7 @@ function Book({ book, loading }) {
           <div className="recommended__book--details-icon">
             <CiStar />
           </div>
-          <div className="recommended__book--details-text">4.4</div>
+          <div className="recommended__book--details-text">{averageRating.toFixed(1)}</div>
         </div>
       </div>
     </Link>

@@ -15,11 +15,13 @@ import { Toaster } from "react-hot-toast";
 
 import LoginModal from "../components/LoginModal";
 import useCurrentUser from "../hook/useCurrentUser";
+// import useSubscription from "../hooks/useSubscription";
 import payments from "../lib/initializeStripe";
 
 import { getProducts, Product } from "@stripe/firestore-stripe-payments";
 import { db } from "../firebase/connectFirebase";
 import { collection, getDocs,query } from "firebase/firestore";
+import useSubscription from "../hook/useSubscription";
 
 export default function App({ Component, pageProps }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,7 +30,7 @@ export default function App({ Component, pageProps }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [variant, setVariant] = useState("login");
   const [isCheckingUser, setIsCheckingUser] = useState(false);
-  const [subscription, setSubscription] = useState(false);
+ 
   const [fontSize, setFontSize] = useState("text-base");
   const [bookExist, setBookExist] = useState(false);
   const [booksInLibrary, setBooksInLibrary] = useState([]);
@@ -129,6 +131,9 @@ export default function App({ Component, pageProps }) {
     fetchProducts();
   }, []);
 
+  const subscription = useSubscription(user);
+
+
   return (
     <QueryClientProvider client={queryClient}>
       <AIContext.Provider
@@ -148,7 +153,7 @@ export default function App({ Component, pageProps }) {
           isCheckingUser,
           setIsCheckingUser,
           subscription,
-          setSubscription,
+          // setSubscription,
           fontSize,
           setFontSize,
           bookExist,

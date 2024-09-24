@@ -134,9 +134,9 @@ function MainNavBar({ IoSearch, IoMenu, toggleSideBar }) {
           <SearchSkelentons />
         ) : query && searchBooks.length > 0 ? (
           <div class="search__books--wrapper">
-            {searchBooks.map((book) => {
+            {searchBooks.map((book,index) => {
               return (
-                <Link class="search__book--link" href={`/book/${book.id}`}>
+                <Link key={index} class="search__book--link" href={`/book/${book.id}`}>
                   <audio onLoadedMetadata={handleAudioLoadedMetadata} src={book.audioLink}></audio>
                   <figure class="book__image--wrapper !h-[80px] !w-[80px] !min-w-[80px]">
                     <img
@@ -154,7 +154,7 @@ function MainNavBar({ IoSearch, IoMenu, toggleSideBar }) {
                           <svg
                             stroke="currentColor"
                             fill="currentColor"
-                            stroke-width="0"
+                            strokeWidth="0"
                             viewBox="0 0 24 24"
                             height="1em"
                             width="1em"

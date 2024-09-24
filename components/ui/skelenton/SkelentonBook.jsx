@@ -13,7 +13,7 @@ function SkelentonBook({ title, sub_title }) {
 
       <div className="for-you__recommended--books">
         {new Array(7).fill(0).map((_, index) => (
-          <a className="for-you__recommended--books-link">
+          <a key={index} className="for-you__recommended--books-link">
             <figure className="book__image--wrapper mb-9">
               <div className="book__image block">
                 <Skeleton height={200} width={"100%"}  borderRadius={0}  />

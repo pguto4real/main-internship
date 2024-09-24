@@ -4,9 +4,7 @@ import NotLoggedIn from "../../components/NotLoggedIn";
 import Link from "next/link";
 
 function settings() {
-  const { isLoggedIn } = useContext(AIContext);
-  
-
+  const { isLoggedIn, currentUser, subscription } = useContext(AIContext);
   return (
     <div className="container">
       <div className="row">
@@ -17,17 +15,19 @@ function settings() {
           <>
             <div className="setting__content">
               <div className="settings__sub--title">Your Subscription plan</div>
-              <div className="settings__text">Basic</div>
-              <Link
-                className="btn__settings settings__upgrade--btn"
-                href="/choose-plan"
-              >
-                Upgrade to Premium
-              </Link>
+              <div className="settings__text">{subscription?.items[0].price.product.name==="Premium Plus Yearly"?"Premium-plus":"Premium"}</div>
+              {!subscription && (
+                <Link
+                  className="btn__settings settings__upgrade--btn"
+                  href="/choose-plan"
+                >
+                  Upgrade to Premium
+                </Link>
+              )}
             </div>
             <div className="setting__content">
               <div className="settings__sub--title">Email</div>
-              <div className="settings__text">udokigb@gmail.com</div>
+              <div className="settings__text">{currentUser.email}</div>
             </div>
           </>
         )}
@@ -37,5 +37,5 @@ function settings() {
 }
 
 export default settings;
-settings.showWrapperFull = false
-settings.showFonts = false
+settings.showWrapperFull = false;
+settings.showFonts = false;

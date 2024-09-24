@@ -1,12 +1,29 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AIContext } from "../../Helpers/Context";
 import Plan from "../../components/Plan";
+import { loadCheckout } from "../../lib/initializeStripe";
+import { useRouter } from "next/router";
 
 function index() {
-  const { products, loadingProducts } = useContext(AIContext);
+  const { products, loadingProducts, currentUser, subscription } =
+    useContext(AIContext);
   const [selectedPlan, setSelectedPlan] = useState(products[0]);
   const [spanText, setSpanText] = useState("");
   const [spanSubText, setSpanSubText] = useState("");
+  const [isBillingLoading, setBillingLoading] = useState(false);
+  const router = useRouter();
+  console.log(currentUser);
+  useEffect(() => {
+    if (currentUser) {
+      subscription && router.push("/for-you");
+    }
+  }, [subscription]);
+  const subscribeToPlan = () => {
+    if (!currentUser) return;
+
+    loadCheckout(selectedPlan?.priceId, currentUser.uid);
+    setBillingLoading(true);
+  };
 
   const handlePlanClick = (plan, spanText, spanSubText) => {
     setSelectedPlan(plan);
@@ -122,8 +139,17 @@ function index() {
 
             <div className="plan__card--cta">
               <span className="btn--wrapper">
-                <button className="btn w-[300px]" fdprocessedid="i4p0y">
-                  <span>{spanText}</span>
+                <button
+                  onClick={subscribeToPlan}
+                  className="btn w-[300px]"
+                  fdprocessedid="i4p0y"
+                  disabled={!selectedPlan || isBillingLoading}
+                >
+                  {isBillingLoading ? (
+                    <span className="loading loading-infinity loading-lg"></span>
+                  ) : (
+                    <span>{spanText}</span>
+                  )}
                 </button>
               </span>
               <div className="plan__disclaimer">{spanSubText}</div>
@@ -331,7 +357,9 @@ function index() {
                 </div>
               </div>
               <div className="footer__copyright--wrapper">
-                <div className="footer__copyright">Copyright © 2023 Summarist.</div>
+                <div className="footer__copyright">
+                  Copyright © 2023 Summarist.
+                </div>
               </div>
             </div>
           </div>

@@ -41,9 +41,10 @@ export default function Home() {
       setIsModalOpen(false);
     }
   };
-
+  console.log(isLoggedIn)
   // Add and remove event listeners
   useEffect(() => {
+    
     if (isModalOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
@@ -55,8 +56,14 @@ export default function Home() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
 
-    isLoggedIn && router.push("/for-you");
+  
   }, [isModalOpen]);
+  useEffect(() => {
+    console.log(isLoggedIn)
+    isLoggedIn && router.push("/for-you");
+   
+  
+  }, [isLoggedIn]);
   if (isCheckingUser) {
     return (
       <div className="flex items-center justify-center h-[100vh]">

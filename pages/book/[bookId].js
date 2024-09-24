@@ -10,9 +10,16 @@ import useFireStore from "../../hook/useFirestore";
 const BookDetails = ({ initialBookData, bookId }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { isLoggedIn, currentUser, setIsModalOpen, isModalOpen,bookExist,
-    setBookExist,query,setQuery } =
-    useContext(AIContext);
+  const {
+    isLoggedIn,
+    currentUser,
+    setIsModalOpen,
+    isModalOpen,
+    bookExist,
+    setBookExist,
+    query,
+    setQuery,
+  } = useContext(AIContext);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -59,7 +66,6 @@ const BookDetails = ({ initialBookData, bookId }) => {
   };
 
   const addOrRemoveBook = () => {
- 
     saveToLibrary(bookToSave, currentUser);
   };
 
@@ -89,16 +95,17 @@ const BookDetails = ({ initialBookData, bookId }) => {
     const saveBookData = async () => {
       if (currentUser?.uid) {
         const bookeExist = isBookExist(bookToSave, currentUser);
-   
       }
     };
 
     saveBookData();
-  }, [currentUser,isBookExist]);
+  }, [currentUser, isBookExist]);
   return (
     <div class="inner__wrapper">
       <div class="inner__book">
-        <div class="inner-book__title">{title} {subscriptionRequired && "(Premium)"} </div>
+        <div class="inner-book__title">
+          {title} {subscriptionRequired && "(Premium)"}{" "}
+        </div>
         <div class="inner-book__author">{author}</div>
         <div class="inner-book__sub--title">{subTitle}</div>
         <div class="inner-book__wrapper">
@@ -193,8 +200,18 @@ const BookDetails = ({ initialBookData, bookId }) => {
 
             <div class="inner-book__bookmark--text">Saved in My Library</div>
           </div>
-        ) : (
+        ) : isLoggedIn ? (
           <div class="inner-book__bookmark" onClick={addOrRemoveBook}>
+            <div class="inner-book__bookmark--icon">
+              <FaRegBookmark />
+            </div>
+
+            <div class="inner-book__bookmark--text">
+              Add title to My Library
+            </div>
+          </div>
+        ) : (
+          <div class="inner-book__bookmark" onClick={() => toggleModal()}>
             <div class="inner-book__bookmark--icon">
               <FaRegBookmark />
             </div>
