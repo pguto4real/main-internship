@@ -19,7 +19,7 @@ function useSubscription(user) {
       );
 
       if (subscriptions.length > 0) {
-        console.log(subscriptions[0].data())
+      
         setSubscription(subscriptions[0].data());
       }
     });

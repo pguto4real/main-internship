@@ -133,7 +133,22 @@ export default function App({ Component, pageProps }) {
 
   const subscription = useSubscription(user);
 
+  const [darkMode, setDarkMode] = useState(true);
 
+  useEffect(() => {
+    // Check localStorage or system preferences for dark mode on page load
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setDarkMode(true);
+  }, []);
+
+  useEffect(() => {
+    console.log(darkMode)
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
   return (
     <QueryClientProvider client={queryClient}>
       <AIContext.Provider
